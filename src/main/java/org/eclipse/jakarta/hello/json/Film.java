@@ -13,21 +13,21 @@ class Film implements Serializable {
     private String support;
     private String title;
     private String description;
-    private String release_date;
+    private String releaseDate;
     private int year;
     private float rate;
     private String opinion;
     private Person director;
     private List<Person> actors;
 
-    public Film(int id, String poster, String lang, String support, String title, String description, String release_date, int year, float rate, String opinion, Person director, List<Person> actors) {
+    public Film(int id, String poster, String lang, String support, String title, String description, String releaseDate, int year, float rate, String opinion, Person director, List<Person> actors) {
         this.id = id;
         this.poster = poster;
         this.lang = lang;
         this.support = support;
         this.title = title;
         this.description = description;
-        this.release_date = release_date;
+        this.releaseDate = releaseDate;
         this.year = year;
         this.rate = rate;
         this.opinion = opinion;
@@ -83,12 +83,12 @@ class Film implements Serializable {
         this.description = description;
     }
 
-    public String getRelease_date() {
-        return release_date;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public int getYear() {

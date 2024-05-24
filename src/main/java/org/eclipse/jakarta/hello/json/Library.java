@@ -7,16 +7,16 @@ import java.io.Serializable;
 import java.util.List;
 
 class Library implements Serializable {
-    private String owner_id;
+    private String ownerId;
     private List<Film> films;
 
-    public Library(String owner_id, List<Film> films) {
-        this.owner_id = owner_id;
+    public Library(String ownerId, List<Film> films) {
+        this.ownerId = ownerId;
         this.films = films;
     }
 
     public String getOwner_id() {
-        return owner_id;
+        return ownerId;
     }
 
     public List<Film> getFilms() {
