@@ -1,10 +1,9 @@
-package org.eclipse.jakarta.hello.json;
+package fr.javatheque.json.object;
 
-import java.io.Serializable;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-class User implements Serializable {
+public class User {
     private String lastname;
     private String firstname;
     private String email;
@@ -71,7 +70,14 @@ class User implements Serializable {
 
     public JsonObject toJson() {
         Gson gson = new Gson();
-        JsonObject jsonObject = gson.toJsonTree(this).getAsJsonObject();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", id);
+        jsonObject.addProperty("lastname", lastname);
+        jsonObject.addProperty("firstname", firstname);
+        jsonObject.addProperty("email", email);
+        jsonObject.addProperty("password", password);
+        jsonObject.add("library", library.toJson());
+
         return jsonObject;
     }
 

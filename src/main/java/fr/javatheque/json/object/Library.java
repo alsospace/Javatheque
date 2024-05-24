@@ -1,4 +1,4 @@
-package org.eclipse.jakarta.hello.json;
+package fr.javatheque.json.object;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import java.io.Serializable;
 import java.util.List;
 
-class Library implements Serializable {
+public class Library implements Serializable {
     private String ownerId;
     private List<Film> films;
 

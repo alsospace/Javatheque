@@ -1,4 +1,6 @@
-package org.eclipse.jakarta.hello;
+package fr.javatheque;
+
+import fr.javatheque.json.JsonManager;
 
 public class Hello {
 

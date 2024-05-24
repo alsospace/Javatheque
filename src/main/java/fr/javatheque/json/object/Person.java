@@ -1,7 +1,4 @@
-package org.eclipse.jakarta.hello.json;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+package fr.javatheque.json.object;
 
 import java.io.Serializable;
 
@@ -28,16 +25,5 @@ public class Person implements Serializable {
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
-    }
-
-    public JsonObject toJson() {
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.toJsonTree(this).getAsJsonObject();
-        return jsonObject;
-    }
-
-    public static Person deserializeFromJson(String jsonStr) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, Person.class);
     }
 }
