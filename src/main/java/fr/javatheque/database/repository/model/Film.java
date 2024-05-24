@@ -1,9 +1,8 @@
-package fr.javatheque.json.object;
+package fr.javatheque.database.repository.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Film implements Serializable {
+public class Film{
     private int id;
     private String poster;
     private String lang;

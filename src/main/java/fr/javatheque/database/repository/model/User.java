@@ -1,9 +1,14 @@
-package fr.javatheque.json.object;
+package fr.javatheque.database.repository.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import fr.javatheque.util.PasswordUtil;
+
+import java.util.*;
 
 public class User {
+
+    private transient final List<User> users = new ArrayList<>();
+    private transient final Map<String, User> usersByEmail = new HashMap<>();
+
     private String lastname;
     private String firstname;
     private String email;
@@ -11,13 +16,14 @@ public class User {
     private Library library;
     private String id;
 
-    public User(String lastname, String firstname, String email, String password, Library library, String id) {
+    public User(String lastname, String firstname, String email, String password, Library library, String id,
+                boolean needToEncryptPassword) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.email = email;
-        this.password = password;
-        this.library = library;
-        this.id = id;
+        this.password = needToEncryptPassword ? PasswordUtil.encryptPassword(password) : password;
+        this.library = library != null ? library : new Library(getId(), new ArrayList<>());
+        this.id = id != null ? id : UUID.randomUUID().toString();
     }
 
     public String getLastname() {
@@ -66,23 +72,5 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public JsonObject toJson() {
-        Gson gson = new Gson();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("id", id);
-        jsonObject.addProperty("lastname", lastname);
-        jsonObject.addProperty("firstname", firstname);
-        jsonObject.addProperty("email", email);
-        jsonObject.addProperty("password", password);
-        jsonObject.add("library", library.toJson());
-
-        return jsonObject;
-    }
-
-    public static User deserializeFromJson(String jsonStr) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, User.class);
     }
 }

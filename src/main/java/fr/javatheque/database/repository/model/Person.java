@@ -1,8 +1,8 @@
-package fr.javatheque.json.object;
+package fr.javatheque.database.repository.model;
 
 import java.io.Serializable;
 
-public class Person implements Serializable {
+public class Person {
     private String lastname;
     private String firstname;
 
