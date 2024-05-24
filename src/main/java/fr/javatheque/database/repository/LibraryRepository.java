@@ -73,7 +73,7 @@ public class LibraryRepository extends ARepository {
      */
     public void updateLibrary(Library library) {
         Document document = MongoUtil.objectToDocument(library);
-        super.getCollection().replaceOne(Filters.eq("ownerId", library.getOwnerID()), document);
+        super.getCollection().replaceOne(Filters.eq("ownerId", library.getOwnerId()), document);
     }
 
     /**
