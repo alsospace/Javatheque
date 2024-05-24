@@ -6,8 +6,19 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MongoUtil is a utility class providing methods for converting objects to MongoDB Documents
+ * and vice versa.
+ */
 public class MongoUtil {
 
+    /**
+     * Converts an object to a MongoDB Document.
+     *
+     * @param obj The object to convert.
+     * @param <T> The type of the object.
+     * @return The corresponding MongoDB Document.
+     */
     public static <T> Document objectToDocument(T obj) {
         Document document = new Document();
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -33,6 +44,14 @@ public class MongoUtil {
         return document;
     }
 
+    /**
+     * Converts a MongoDB Document to an object of the specified class.
+     *
+     * @param document The MongoDB Document to convert.
+     * @param clazz    The class of the object to create.
+     * @param <T>      The type of the object.
+     * @return The object created from the MongoDB Document.
+     */
     public static <T> T documentToObject(Document document, Class<T> clazz) {
         try {
             T obj = clazz.getDeclaredConstructor().newInstance();

@@ -5,71 +5,67 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * A utility class for password encryption and verification.
+ */
 public class PasswordUtil {
-    private static final int SALT_LENGTH = 16;
-    private static final int ITERATIONS = 10000;
-    private static final int KEY_LENGTH = 256;
 
-    public static String encryptPassword(String password) {
-        byte[] salt = generateSalt();
-        byte[] hash = hashPassword(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
-        return Base64.getEncoder().encodeToString(concat(salt, hash));
-    }
-
-    public static boolean verifyPassword(String passwordToVerify, String hashedPassword) {
-        byte[] decodedHash = Base64.getDecoder().decode(hashedPassword);
-        byte[] salt = extractSalt(decodedHash);
-        byte[] hash = hashPassword(passwordToVerify.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
-        return MessageDigest.isEqual(hash, extractHash(decodedHash));
-    }
-
+    /**
+     * Generates a random salt.
+     *
+     * @return The generated salt.
+     */
     private static byte[] generateSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[SALT_LENGTH];
-        random.nextBytes(salt);
+        byte[] salt = new byte[16];
+        new SecureRandom().nextBytes(salt);
         return salt;
     }
 
-    private static byte[] hashPassword(char[] password, byte[] salt, int iterations, int keyLength) {
+    /**
+     * Encrypts the given password.
+     *
+     * @param password The password to encrypt.
+     * @return The encrypted password.
+     */
+    public static String encryptPassword(String password) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA256");
-            digest.reset();
-            digest.update(salt);
-            byte[] hash = digest.digest(new String(password).getBytes());
-            for (int i = 0; i < iterations; i++) {
-                digest.reset();
-                hash = digest.digest(concat(hash, new byte[]{(byte) i}));
-            }
-            return ByteUtils.truncate(hash, keyLength / 8);
+            byte[] salt = generateSalt();
+
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+            messageDigest.update(salt);
+
+            byte[] hashedPassword = messageDigest.digest(password.getBytes());
+
+            return Base64.getEncoder().encodeToString(salt) + ":" + Base64.getEncoder().encodeToString(hashedPassword);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Algorithme de hachage non supporté", e);
+            e.printStackTrace();
+            return null;
         }
     }
 
-    private static byte[] concat(byte[] a, byte[] b) {
-        byte[] result = new byte[a.length + b.length];
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
-    }
+    /**
+     * Verifies the given password against the encrypted password.
+     *
+     * @param password          The password to verify.
+     * @param encryptedPassword The encrypted password.
+     * @return True if the passwords match, false otherwise.
+     */
+    public static boolean verifyPassword(String password, String encryptedPassword) {
+        try {
+            String[] parts = encryptedPassword.split(":");
+            byte[] salt = Base64.getDecoder().decode(parts[0]);
+            byte[] hashedPassword = Base64.getDecoder().decode(parts[1]);
 
-    private static byte[] extractSalt(byte[] decodedHash) {
-        byte[] salt = new byte[SALT_LENGTH];
-        System.arraycopy(decodedHash, 0, salt, 0, SALT_LENGTH);
-        return salt;
-    }
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
-    private static byte[] extractHash(byte[] decodedHash) {
-        byte[] hash = new byte[decodedHash.length - SALT_LENGTH];
-        System.arraycopy(decodedHash, SALT_LENGTH, hash, 0, hash.length);
-        return hash;
-    }
+            messageDigest.update(salt);
+            byte[] hashedAttempt = messageDigest.digest(password.getBytes());
 
-    private static class ByteUtils {
-        public static byte[] truncate(byte[] data, int length) {
-            byte[] truncated = new byte[length];
-            System.arraycopy(data, 0, truncated, 0, length);
-            return truncated;
+            return MessageDigest.isEqual(hashedPassword, hashedAttempt);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

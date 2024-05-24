@@ -6,6 +6,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+/**
+ * ARepository is an abstract class representing a generic repository for MongoDB.
+ */
 public abstract class ARepository {
 
     private static final String DATABASE_NAME = "javatheque";
@@ -15,6 +18,12 @@ public abstract class ARepository {
 
     private final MongoCollection<Document> collection;
 
+    /**
+     * Constructs a new ARepository instance with the specified collection name.
+     * Initializes the MongoDB client and database if not already initialized.
+     *
+     * @param collectionName The name of the collection to be used.
+     */
     public ARepository(String collectionName) {
         if (mongoClient == null) {
             synchronized (ARepository.class) {
@@ -27,10 +36,20 @@ public abstract class ARepository {
         this.collection = mongoDatabase.getCollection(collectionName);
     }
 
+    /**
+     * Retrieves the MongoDB database associated with this repository.
+     *
+     * @return The MongoDB database instance.
+     */
     public MongoDatabase getMongoDatabase() {
         return mongoDatabase;
     }
 
+    /**
+     * Retrieves the MongoDB collection associated with this repository.
+     *
+     * @return The MongoDB collection instance.
+     */
     public MongoCollection<Document> getCollection() {
         return collection;
     }
