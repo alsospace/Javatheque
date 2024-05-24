@@ -31,14 +31,11 @@ public class LibraryRepository {
     public List<Library> getAllLibraries() {
         List<Library> libraries = new ArrayList<>();
         MongoCollection<Document> collection = mongoDatabase.getCollection("libraries");
-        MongoCursor<Document> cursor = collection.find().iterator();
-        try {
+        try (MongoCursor<Document> cursor = collection.find().iterator()) {
             while (cursor.hasNext()) {
                 Document document = cursor.next();
                 libraries.add(MongoUtil.documentToObject(document, Library.class));
             }
-        } finally {
-            cursor.close();
         }
         return libraries;
     }

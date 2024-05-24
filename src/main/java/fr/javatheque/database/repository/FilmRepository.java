@@ -29,14 +29,11 @@ public class FilmRepository {
     public List<Film> getAllFilms() {
         List<Film> films = new ArrayList<>();
         MongoCollection<Document> collection = mongoDatabase.getCollection("films");
-        MongoCursor<Document> cursor = collection.find().iterator();
-        try {
+        try (MongoCursor<Document> cursor = collection.find().iterator()) {
             while (cursor.hasNext()) {
                 Document document = cursor.next();
                 films.add(MongoUtil.documentToObject(document, Film.class));
             }
-        } finally {
-            cursor.close();
         }
         return films;
     }
