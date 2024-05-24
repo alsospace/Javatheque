@@ -1,7 +1,5 @@
 package fr.javatheque;
 
-import fr.javatheque.json.JsonManager;
-
 public class Hello {
 
 	private String name;
