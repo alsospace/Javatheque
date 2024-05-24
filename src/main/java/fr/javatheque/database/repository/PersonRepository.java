@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-public class PersonRepository {
-    private final MongoDatabase mongoDatabase;
-
-    public PersonRepository(MongoDatabase mongoDatabase) {
-        this.mongoDatabase = mongoDatabase;
+public class PersonRepository extends ARepository {
+    public PersonRepository() {
+        super("person");
     }
     public static Document documentFromPerson(Person person) {
         return new Document()

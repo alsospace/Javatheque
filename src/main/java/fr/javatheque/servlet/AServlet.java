@@ -10,32 +10,18 @@ import fr.javatheque.database.repository.UserRepository;
 import jakarta.servlet.http.HttpServlet;
 
 public abstract class AServlet extends HttpServlet {
-
-    private static MongoDatabase mongoDatabase;
-
     private final FilmRepository filmRepository;
     private final LibraryRepository libraryRepository;
     private final PersonRepository personRepository;
     private final UserRepository userRepository;
 
     public AServlet() {
-        if (mongoDatabase == null) {
-            synchronized (AServlet.class) {
-                if (mongoDatabase == null) {
-                    mongoDatabase = initializeDatabase();
-                }
-            }
-        }
-        this.filmRepository = new FilmRepository(mongoDatabase);
-        this.libraryRepository = new LibraryRepository(mongoDatabase);
-        this.personRepository = new PersonRepository(mongoDatabase);
-        this.userRepository = new UserRepository(mongoDatabase);
+        this.filmRepository = new FilmRepository();
+        this.libraryRepository = new LibraryRepository();
+        this.personRepository = new PersonRepository();
+        this.userRepository = new UserRepository();
     }
 
-    private MongoDatabase initializeDatabase() {
-        MongoClient mongoClient = MongoClients.create("");
-        return mongoClient.getDatabase("test");
-    }
 
     public FilmRepository getFilmRepository() {
         return filmRepository;
