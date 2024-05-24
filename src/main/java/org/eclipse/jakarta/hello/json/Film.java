@@ -1,9 +1,12 @@
 package org.eclipse.jakarta.hello.json;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 class Film implements Serializable {
@@ -134,11 +137,44 @@ class Film implements Serializable {
     public JsonObject toJson() {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.toJsonTree(this).getAsJsonObject();
+
+        jsonObject.add("director", director.toJson());
+
+        JsonArray actorsArray = new JsonArray();
+        for (Person actor : actors) {
+            actorsArray.add(actor.toJson());
+        }
+        jsonObject.add("actors", actorsArray);
+
         return jsonObject;
     }
 
     public static Film deserializeFromJson(String jsonStr) {
         Gson gson = new Gson();
-        return gson.fromJson(jsonStr, Film.class);
+        JsonObject jsonObject = gson.fromJson(jsonStr, JsonObject.class);
+
+        int id = jsonObject.get("id").getAsInt();
+        String poster = jsonObject.get("poster").getAsString();
+        String lang = jsonObject.get("lang").getAsString();
+        String support = jsonObject.get("support").getAsString();
+        String title = jsonObject.get("title").getAsString();
+        String description = jsonObject.get("description").getAsString();
+        String releaseDate = jsonObject.get("releaseDate").getAsString();
+        int year = jsonObject.get("year").getAsInt();
+        float rate = jsonObject.get("rate").getAsFloat();
+        String opinion = jsonObject.get("opinion").getAsString();
+
+        JsonObject directorObject = jsonObject.getAsJsonObject("director");
+        Person director = gson.fromJson(directorObject, Person.class);
+
+        JsonArray actorsArray = jsonObject.getAsJsonArray("actors");
+        List<Person> actors = new ArrayList<>();
+        for (JsonElement actorElement : actorsArray) {
+            Person actor = gson.fromJson(actorElement, Person.class);
+            actors.add(actor);
+        }
+
+        return new Film(id, poster, lang, support, title, description, releaseDate, year, rate, opinion, director, actors);
     }
+
 }

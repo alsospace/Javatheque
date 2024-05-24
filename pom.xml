@@ -8,7 +8,7 @@
 
 	<name>javatheque</name>
 	<description>
-		Ceci est une application Jakarta EE très simple générée par le Starter officiel d'Eclipse.
+		Ceci est une application Jakarta EE.
 	</description>
 
 	<properties>
@@ -29,18 +29,6 @@
 			<version>${jakartaee-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
@@ -68,40 +56,6 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
- 			<plugin>
-                <groupId>org.glassfish.maven.plugin</groupId>
-                <artifactId>maven-glassfish-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <glassfiHome>${glassfish.home}</glassfiHome>
-					<user>admin</user>
-					<adminPassword>changeit</adminPassword>
-                    <app>${project.build.directory}/${project.build.finalName}.war</app>
-                    <name>${project.build.finalName}</name>
-                    <components>
-                        <component>
-                            <name>${project.build.finalName}</name>
-                        </component>
-                    </components>
-					<domainDirectory>${glassfish.home}/glassfish/domains</domainDirectory>
-                    <domain>
-                        <name>domain1</name>
-                        <httpPort>8080</httpPort>
-                    </domain>
-					<asadminPath>${glassfish.home}/bin/asadmin</asadminPath>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>redeploy</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>undeploy</goal>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
 		</plugins>
 	</build>
 </project>
