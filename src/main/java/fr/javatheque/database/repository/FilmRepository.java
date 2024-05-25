@@ -1,9 +1,10 @@
 package fr.javatheque.database.repository;
 
-import com.mongodb.client.MongoCursor;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
-import fr.javatheque.database.repository.model.Film;
-import fr.javatheque.util.MongoUtil;
+import fr.javatheque.database.MongoDBConnection;
+import fr.javatheque.database.model.Film;
+import fr.javatheque.database.model.Person;
 import jakarta.ejb.Stateless;
 import org.bson.Document;
 
@@ -14,74 +15,99 @@ import java.util.List;
  * FilmRepository is a stateless class representing a repository for managing Film entities in MongoDB.
  */
 @Stateless
-public class FilmRepository extends ARepository {
+public class FilmRepository {
+    private final MongoCollection<Document> collection;
 
-    /**
-     * Constructs a new FilmRepository instance.
-     * Initializes the repository with the "films" collection.
-     */
     public FilmRepository() {
-        super("films");
+        MongoDatabase mongoDatabase = MongoDBConnection.getJavathequeDatabase();
+        this.collection = mongoDatabase.getCollection("films");
     }
 
-    /**
-     * Creates a new film in the repository.
-     *
-     * @param film The film to be created.
-     * @return The created film.
-     */
     public Film createFilm(Film film) {
-        Document document = MongoUtil.objectToDocument(film);
-        super.getCollection().insertOne(document);
+        Document document = new Document()
+                .append("film_id", film.getId())
+                .append("library_id", film.getLibraryId())
+                .append("poster", film.getPoster())
+                .append("lang", film.getLang())
+                .append("support", film.getSupport())
+                .append("title", film.getTitle())
+                .append("description", film.getDescription())
+                .append("releaseDate", film.getReleaseDate())
+                .append("year", film.getYear())
+                .append("rate", film.getRate())
+                .append("opinion", film.getOpinion())
+                .append("director", PersonRepository.documentFromPerson(film.getDirector()))
+                .append("actors", PersonRepository.documentsFromPersons(film.getActors()));
+        this.collection.insertOne(document);
         return film;
     }
 
-    /**
-     * Retrieves all films from the repository.
-     *
-     * @return A list of all films.
-     */
     public List<Film> getAllFilms() {
         List<Film> films = new ArrayList<>();
-        try (MongoCursor<Document> cursor = super.getCollection().find().iterator()) {
+        try (MongoCursor<Document> cursor = this.collection.find().iterator()) {
             while (cursor.hasNext()) {
                 Document document = cursor.next();
-                films.add(MongoUtil.documentToObject(document, Film.class));
+                films.add(documentToFilm(document));
             }
         }
         return films;
     }
 
-    /**
-     * Retrieves a film by its ID from the repository.
-     *
-     * @param id The ID of the film to retrieve.
-     * @return The film with the specified ID, or null if not found.
-     */
+    public List<Film> getFilmsByLibraryId(String libraryId) {
+        List<Film> films = new ArrayList<>();
+        try (MongoCursor<Document> cursor = this.collection.find(Filters.eq("library_id", libraryId)).iterator()) {
+            while (cursor.hasNext()) {
+                Document document = cursor.next();
+                films.add(documentToFilm(document));
+            }
+        }
+        return films;
+    }
+
     public Film getFilmById(int id) {
-        Document document = super.getCollection().find(Filters.eq("id", id)).first();
+        Document document = this.collection.find(Filters.eq("film_id", id)).first();
         if (document != null) {
-            return MongoUtil.documentToObject(document, Film.class);
+            return documentToFilm(document);
         }
         return null;
     }
 
-    /**
-     * Updates a film in the repository.
-     *
-     * @param film The film to update.
-     */
     public void updateFilm(Film film) {
-        Document document = MongoUtil.objectToDocument(film);
-        super.getCollection().replaceOne(Filters.eq("id", film.getId()), document);
+        Document document = new Document()
+                .append("film_id", film.getId())
+                .append("library_id", film.getLibraryId())
+                .append("poster", film.getPoster())
+                .append("lang", film.getLang())
+                .append("support", film.getSupport())
+                .append("title", film.getTitle())
+                .append("description", film.getDescription())
+                .append("releaseDate", film.getReleaseDate())
+                .append("year", film.getYear())
+                .append("rate", film.getRate())
+                .append("opinion", film.getOpinion())
+                .append("director", PersonRepository.documentFromPerson(film.getDirector()))
+                .append("actors", PersonRepository.documentsFromPersons(film.getActors()));
+        this.collection.replaceOne(Filters.eq("film_id", film.getId()), document);
     }
 
-    /**
-     * Deletes a film from the repository by its ID.
-     *
-     * @param id The ID of the film to delete.
-     */
     public void deleteFilm(int id) {
-        super.getCollection().deleteOne(Filters.eq("id", id));
+        this.collection.deleteOne(Filters.eq("film_id", id));
+    }
+
+    private Film documentToFilm(Document document) {
+        int id = document.getInteger("film_id");
+        String libraryId = document.getString("libraryId");
+        String poster = document.getString("poster");
+        String lang = document.getString("lang");
+        String support = document.getString("support");
+        String title = document.getString("title");
+        String description = document.getString("description");
+        String releaseDate = document.getString("releaseDate");
+        int year = document.getInteger("year");
+        float rate = document.getDouble("rate").floatValue();
+        String opinion = document.getString("opinion");
+        Person director = PersonRepository.documentToPerson((Document) document.get("director"));
+        List<Person> actors = PersonRepository.documentsToPersons(document.getList("actors", Document.class));
+        return new Film(id, libraryId, poster, lang, support, title, description, releaseDate, year, rate, opinion, director, actors);
     }
 }

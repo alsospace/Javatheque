@@ -1,9 +1,13 @@
 package fr.javatheque.database.repository;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import fr.javatheque.database.repository.model.Library;
-import fr.javatheque.util.MongoUtil;
+import fr.javatheque.database.MongoDBConnection;
+import fr.javatheque.database.model.Film;
+import fr.javatheque.database.model.Library;
+import fr.javatheque.database.model.Person;
 import jakarta.ejb.Stateless;
 import org.bson.Document;
 
@@ -14,74 +18,118 @@ import java.util.List;
  * LibraryRepository is a stateless class representing a repository for managing Library entities in MongoDB.
  */
 @Stateless
-public class LibraryRepository extends ARepository {
+public class LibraryRepository {
+    private final MongoCollection<Document> collection;
 
-    /**
-     * Constructs a new LibraryRepository instance.
-     * Initializes the repository with the "libraries" collection.
-     */
     public LibraryRepository() {
-        super("libraries");
+        MongoDatabase mongoDatabase = MongoDBConnection.getJavathequeDatabase();
+        this.collection = mongoDatabase.getCollection("libraries");
     }
 
-    /**
-     * Creates a new library in the repository.
-     *
-     * @param library The library to be created.
-     * @return The created library.
-     */
     public Library createLibrary(Library library) {
-        Document document = MongoUtil.objectToDocument(library);
-        super.getCollection().insertOne(document);
+        List<Document> filmDocuments = new ArrayList<>();
+        for (Film film : library.getFilms()) {
+            Document filmDocument = new Document()
+                    .append("library_id", film.getId())
+                    .append("poster", film.getPoster())
+                    .append("lang", film.getLang())
+                    .append("support", film.getSupport())
+                    .append("title", film.getTitle())
+                    .append("description", film.getDescription())
+                    .append("releaseDate", film.getReleaseDate())
+                    .append("year", film.getYear())
+                    .append("rate", film.getRate())
+                    .append("opinion", film.getOpinion())
+                    .append("director", PersonRepository.documentFromPerson(film.getDirector()))
+                    .append("actors", PersonRepository.documentsFromPersons(film.getActors()));
+            filmDocuments.add(filmDocument);
+        }
+        Document document = new Document()
+                .append("library_id", library.getId())
+                .append("owner_id", library.getOwnerId())
+                .append("films", filmDocuments);
+        this.collection.insertOne(document);
         return library;
     }
 
-    /**
-     * Retrieves all libraries from the repository.
-     *
-     * @return A list of all libraries.
-     */
+
     public List<Library> getAllLibraries() {
         List<Library> libraries = new ArrayList<>();
-        try (MongoCursor<Document> cursor = super.getCollection().find().iterator()) {
+        try (MongoCursor<Document> cursor = this.collection.find().iterator()) {
             while (cursor.hasNext()) {
                 Document document = cursor.next();
-                libraries.add(MongoUtil.documentToObject(document, Library.class));
+                libraries.add(documentToLibrary(document));
             }
         }
         return libraries;
     }
 
-    /**
-     * Retrieves a library by its owner ID from the repository.
-     *
-     * @param ownerId The ID of the owner of the library.
-     * @return The library with the specified owner ID, or null if not found.
-     */
     public Library getLibraryByOwnerId(String ownerId) {
-        Document document = super.getCollection().find(Filters.eq("ownerId", ownerId)).first();
+        Document document = this.collection.find(Filters.eq("owner_id", ownerId)).first();
         if (document != null) {
-            return MongoUtil.documentToObject(document, Library.class);
+            return documentToLibrary(document);
         }
         return null;
     }
 
-    /**
-     * Updates a library in the repository.
-     *
-     * @param library The library to update.
-     */
-    public void updateLibrary(Library library) {
-        Document document = MongoUtil.objectToDocument(library);
-        super.getCollection().replaceOne(Filters.eq("ownerId", library.getOwnerId()), document);
+    public Library getLibraryById(String libraryId) {
+        Document document = this.collection.find(Filters.eq("library_id", libraryId)).first();
+        if (document != null) {
+            return documentToLibrary(document);
+        }
+        return null;
     }
 
-    /**
-     * Deletes a library from the repository by its owner ID.
-     *
-     * @param ownerId The ID of the owner of the library to delete.
-     */
+    public void updateLibrary(Library library) {
+        List<Document> filmDocuments = new ArrayList<>();
+        for (Film film : library.getFilms()) {
+            Document filmDocument = new Document()
+                    .append("id", film.getId())
+                    .append("poster", film.getPoster())
+                    .append("lang", film.getLang())
+                    .append("support", film.getSupport())
+                    .append("title", film.getTitle())
+                    .append("description", film.getDescription())
+                    .append("releaseDate", film.getReleaseDate())
+                    .append("year", film.getYear())
+                    .append("rate", film.getRate())
+                    .append("opinion", film.getOpinion())
+                    .append("director", PersonRepository.documentFromPerson(film.getDirector()))
+                    .append("actors", PersonRepository.documentsFromPersons(film.getActors()));
+            filmDocuments.add(filmDocument);
+        }
+        Document document = new Document()
+                .append("library_id", library.getId())
+                .append("owner_id", library.getOwnerId())
+                .append("films", filmDocuments);
+        this.collection.replaceOne(Filters.eq("owner_id", library.getOwnerId()), document);
+    }
+
     public void deleteLibraryByOwnerId(String ownerId) {
-        super.getCollection().deleteOne(Filters.eq("ownerId", ownerId));
+        this.collection.deleteOne(Filters.eq("owner_id", ownerId));
+    }
+
+    Library documentToLibrary(Document document) {
+        String libraryId = document.getString("library_id");
+        String ownerId = document.getString("owner_id");
+        List<Film> films = new ArrayList<>();
+        List<Document> filmDocuments = document.getList("films", Document.class);
+        for (Document filmDocument : filmDocuments) {
+            int id = filmDocument.getInteger("id");
+            String poster = filmDocument.getString("poster");
+            String lang = filmDocument.getString("lang");
+            String support = filmDocument.getString("support");
+            String title = filmDocument.getString("title");
+            String description = filmDocument.getString("description");
+            String releaseDate = filmDocument.getString("releaseDate");
+            int year = filmDocument.getInteger("year");
+            float rate = filmDocument.getDouble("rate").floatValue();
+            String opinion = filmDocument.getString("opinion");
+            Person director = PersonRepository.documentToPerson((Document) filmDocument.get("director"));
+            List<Person> actors = PersonRepository.documentsToPersons(filmDocument.getList("actors", Document.class));
+            Film film = new Film(id, libraryId,  poster, lang, support, title, description, releaseDate, year, rate, opinion, director, actors);
+            films.add(film);
+        }
+        return new Library(libraryId, ownerId, films);
     }
 }

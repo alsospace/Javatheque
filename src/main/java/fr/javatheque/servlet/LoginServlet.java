@@ -10,11 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name="LoginServlet",urlPatterns = {"/login"})
-public class LoginServlet extends AServlet {
-
-    public LoginServlet(){
-        super();
-    }
+public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -27,7 +23,6 @@ public class LoginServlet extends AServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Validation des identifiants
         HttpSession session = request.getSession();
         session.setAttribute("email", email);
         request.getRequestDispatcher("/views/success.jsp").forward(request, response);

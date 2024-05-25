@@ -1,6 +1,8 @@
 package fr.javatheque.servlet;
 
-import fr.javatheque.database.repository.model.User;
+import fr.javatheque.database.model.Library;
+import fr.javatheque.database.model.User;
+import fr.javatheque.database.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,13 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
-public class RegisterServlet extends AServlet {
-    public RegisterServlet(){
-        super();
-    }
-
+public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -29,8 +28,8 @@ public class RegisterServlet extends AServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        User user = new User(lastname, firstname, email, password, null, null, false);
-        super.getUserRepository().createUser(user);
+        UserRepository ur = new UserRepository();
+        ur.createUser(new User(lastname, firstname, email, password, true));
 
         HttpSession session = request.getSession();
         session.setAttribute("email", email);
