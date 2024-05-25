@@ -12,12 +12,7 @@ import org.bson.codecs.EncoderContext;
 import java.util.List;
 
 public class LibraryCodec implements Codec<Library> {
-
-    private final FilmRepository filmRepository;
-
-    public LibraryCodec() {
-        this.filmRepository = new FilmRepository();
-    }
+    public LibraryCodec() {}
 
     @Override
     public void encode(BsonWriter writer, Library library, EncoderContext encoderContext) {
@@ -33,7 +28,7 @@ public class LibraryCodec implements Codec<Library> {
         String libraryId = reader.readString("library_id");
         String ownerId = reader.readString("owner_id");
         reader.readEndDocument();
-
+        FilmRepository filmRepository = new FilmRepository();
         List<Film> films = filmRepository.getFilmsByLibraryId(libraryId);
         return new Library(libraryId, ownerId, films);
     }

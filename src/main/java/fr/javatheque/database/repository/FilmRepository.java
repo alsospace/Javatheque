@@ -10,71 +10,57 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * FilmRepository is a stateless class representing a repository for managing Film entities in MongoDB.
- */
+
 @Stateless
 public class FilmRepository {
     private final MongoCollection<Document> collection;
+    private final PersonRepository personRepository;
 
     public FilmRepository() {
-        MongoDatabase mongoDatabase = MongoDBConnection.getJavathequeDatabase();
-        this.collection = mongoDatabase.getCollection("films");
+        this.collection = MongoDBConnection.getJavathequeDatabase().getCollection("films");
+        this.personRepository = new PersonRepository();
     }
 
     public Film createFilm(Film film) {
-        Document document = new Document()
-                .append("film_id", film.getId())
-                .append("library_id", film.getLibraryId())
-                .append("poster", film.getPoster())
-                .append("lang", film.getLang())
-                .append("support", film.getSupport())
-                .append("title", film.getTitle())
-                .append("description", film.getDescription())
-                .append("releaseDate", film.getReleaseDate())
-                .append("year", film.getYear())
-                .append("rate", film.getRate())
-                .append("opinion", film.getOpinion())
-                .append("director", PersonRepository.documentFromPerson(film.getDirector()))
-                .append("actors", PersonRepository.documentsFromPersons(film.getActors()));
-        this.collection.insertOne(document);
+        Document document = filmToDocument(film);
+        collection.insertOne(document);
         return film;
     }
 
     public List<Film> getAllFilms() {
         List<Film> films = new ArrayList<>();
-        try (MongoCursor<Document> cursor = this.collection.find().iterator()) {
-            while (cursor.hasNext()) {
-                Document document = cursor.next();
-                films.add(documentToFilm(document));
-            }
+        try (MongoCursor<Document> cursor = collection.find().iterator()) {
+            cursor.forEachRemaining(doc -> films.add(documentToFilm(doc)));
         }
         return films;
     }
 
     public List<Film> getFilmsByLibraryId(String libraryId) {
         List<Film> films = new ArrayList<>();
-        try (MongoCursor<Document> cursor = this.collection.find(Filters.eq("library_id", libraryId)).iterator()) {
-            while (cursor.hasNext()) {
-                Document document = cursor.next();
-                films.add(documentToFilm(document));
-            }
+        try (MongoCursor<Document> cursor = collection.find(Filters.eq("library_id", libraryId)).iterator()) {
+            cursor.forEachRemaining(doc -> films.add(documentToFilm(doc)));
         }
         return films;
     }
 
-    public Film getFilmById(int id) {
-        Document document = this.collection.find(Filters.eq("film_id", id)).first();
-        if (document != null) {
-            return documentToFilm(document);
-        }
-        return null;
+    public Optional<Film> getFilmById(int id) {
+        Document document = collection.find(Filters.eq("film_id", id)).first();
+        return document != null ? Optional.of(documentToFilm(document)) : Optional.empty();
     }
 
     public void updateFilm(Film film) {
-        Document document = new Document()
-                .append("film_id", film.getId())
+        Document document = filmToDocument(film);
+        collection.replaceOne(Filters.eq("film_id", film.getId()), document);
+    }
+
+    public void deleteFilm(int id) {
+        collection.deleteOne(Filters.eq("film_id", id));
+    }
+
+    private Document filmToDocument(Film film) {
+        return new Document("film_id", film.getId())
                 .append("library_id", film.getLibraryId())
                 .append("poster", film.getPoster())
                 .append("lang", film.getLang())
@@ -85,18 +71,13 @@ public class FilmRepository {
                 .append("year", film.getYear())
                 .append("rate", film.getRate())
                 .append("opinion", film.getOpinion())
-                .append("director", PersonRepository.documentFromPerson(film.getDirector()))
-                .append("actors", PersonRepository.documentsFromPersons(film.getActors()));
-        this.collection.replaceOne(Filters.eq("film_id", film.getId()), document);
-    }
-
-    public void deleteFilm(int id) {
-        this.collection.deleteOne(Filters.eq("film_id", id));
+                .append("director", personRepository.toDocument(film.getDirector()))
+                .append("actors", personRepository.toDocuments(film.getActors()));
     }
 
     private Film documentToFilm(Document document) {
         int id = document.getInteger("film_id");
-        String libraryId = document.getString("libraryId");
+        String libraryId = document.getString("library_id");
         String poster = document.getString("poster");
         String lang = document.getString("lang");
         String support = document.getString("support");
@@ -106,8 +87,8 @@ public class FilmRepository {
         int year = document.getInteger("year");
         float rate = document.getDouble("rate").floatValue();
         String opinion = document.getString("opinion");
-        Person director = PersonRepository.documentToPerson((Document) document.get("director"));
-        List<Person> actors = PersonRepository.documentsToPersons(document.getList("actors", Document.class));
+        Person director = personRepository.toPerson((Document) document.get("director"));
+        List<Person> actors = personRepository.toPersons(document.getList("actors", Document.class));
         return new Film(id, libraryId, poster, lang, support, title, description, releaseDate, year, rate, opinion, director, actors);
     }
 }
