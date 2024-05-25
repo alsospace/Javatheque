@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * This class provides methods to perform CRUD operations on user documents in MongoDB.
+ */
 @Stateless
 public class UserRepository {
+
     private static final String USER_ID_KEY = "user_id";
     private static final String LIBRARY_ID_KEY = "library_id";
     private static final String LASTNAME_KEY = "lastname";
@@ -26,12 +29,20 @@ public class UserRepository {
     private final MongoCollection<Document> collection;
     private final LibraryRepository libraryRepository;
 
+    /**
+     * Constructs a UserRepository object.
+     */
     public UserRepository() {
         this.libraryRepository = new LibraryRepository();
         this.collection = MongoDBConnection.getJavathequeDatabase().getCollection("users");
     }
 
-
+    /**
+     * Creates a new user document in the database.
+     *
+     * @param user The user object to be created.
+     * @return The created user object.
+     */
     public User createUser(User user) {
         libraryRepository.createLibrary(user.getLibrary());
         Document document = createUserDocument(user);
@@ -39,6 +50,11 @@ public class UserRepository {
         return user;
     }
 
+    /**
+     * Retrieves all users from the database.
+     *
+     * @return A list of user objects.
+     */
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         try (MongoCursor<Document> cursor = collection.find().iterator()) {
@@ -50,25 +66,52 @@ public class UserRepository {
         return users;
     }
 
+    /**
+     * Retrieves a user by their ID from the database.
+     *
+     * @param id The ID of the user to retrieve.
+     * @return An optional containing the user object, if found.
+     */
     public Optional<User> getUserById(String id) {
         Document document = collection.find(Filters.eq("user_id", id)).first();
         return document != null ? Optional.of(documentToUser(document)) : Optional.empty();
     }
 
+    /**
+     * Retrieves a user by their email from the database.
+     *
+     * @param email The email of the user to retrieve.
+     * @return An optional containing the user object, if found.
+     */
     public Optional<User> getUserByEmail(String email) {
         Document document = collection.find(Filters.eq("email", email)).first();
         return document != null ? Optional.of(documentToUser(document)) : Optional.empty();
     }
 
+    /**
+     * Updates a user document in the database.
+     *
+     * @param user The updated user object.
+     */
     public void updateUser(User user) {
         Document document = createUserDocument(user);
         collection.replaceOne(Filters.eq("user_id", user.getId()), document);
     }
 
+    /**
+     * Deletes a user by their ID from the database.
+     *
+     * @param id The ID of the user to delete.
+     */
     public void deleteUserWithID(String id) {
         collection.deleteOne(Filters.eq("user_id", id));
     }
 
+    /**
+     * Deletes a user by their email from the database.
+     *
+     * @param email The email of the user to delete.
+     */
     public void deleteUserWithEmail(String email) {
         collection.deleteOne(Filters.eq("email", email));
     }

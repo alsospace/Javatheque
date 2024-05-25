@@ -55,6 +55,7 @@ public class User {
         this.usersByID.put(this.id, this);
         this.usersByEmail.put(this.email, this);
     }
+
     /**
      * Gets the last name of the user.
      *

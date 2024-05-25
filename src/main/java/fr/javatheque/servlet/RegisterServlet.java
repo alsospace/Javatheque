@@ -29,7 +29,8 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         UserRepository ur = new UserRepository();
-        ur.createUser(new User(lastname, firstname, email, password, true));
+        User user = ur.createUser(new User(lastname, firstname, email, password, true));
+        user.addToCache();
 
         HttpSession session = request.getSession();
         session.setAttribute("email", email);
