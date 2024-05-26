@@ -38,9 +38,9 @@ public class RegisterServlet extends HttpServlet {
 
         UserRepository ur = new UserRepository();
 
-        Optional<User> zqd = ur.getUserByEmail(email);
+        Optional<User> target = ur.getUserByEmail(email);
 
-        if (zqd.isEmpty()) {
+        if (target.isEmpty()) {
             User user = ur.createUser(new User(lastname, firstname, email, password, true));
             this.userBean.setUserId(user.getId());
             this.userBean.setLastname(user.getLastname());
