@@ -8,10 +8,6 @@ import java.util.*;
  * A class representing a user.
  */
 public class User {
-
-    private final Map<String, User> usersByID = new HashMap<>();
-    private final Map<String, User> usersByEmail = new HashMap<>();
-
     private final String id;
 
     private String lastname;
@@ -49,11 +45,6 @@ public class User {
 
     public User(String lastname, String firstname, String email, String password, String id, boolean needToEncryptPassword) {
         this(lastname, firstname, email, password, null, id, needToEncryptPassword);
-    }
-
-    public void addToCache(){
-        this.usersByID.put(this.id, this);
-        this.usersByEmail.put(this.email, this);
     }
 
     /**

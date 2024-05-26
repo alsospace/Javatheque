@@ -2,23 +2,35 @@
 	xmlns="https://jakarta.ee/xml/ns/jakartaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+	<jsp-config>
+		<taglib>
+			<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+			<taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+		</taglib>
+	</jsp-config>
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class>fr.javatheque.servlet.LoginServlet</servlet-class>
+		<servlet-class>fr.javatheque.servlets.LoginServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
-
 	<servlet>
 		<servlet-name>RegisterServlet</servlet-name>
-		<servlet-class>fr.javatheque.servlet.RegisterServlet</servlet-class>
+		<servlet-class>fr.javatheque.servlets.RegisterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegisterServlet</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
-
+	<servlet>
+		<servlet-name>WelcomeServlet</servlet-name>
+		<servlet-class>fr.javatheque.servlets.WelcomeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WelcomeServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
 </web-app>
 

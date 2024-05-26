@@ -1,27 +1,28 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Success</title>
+    <title>Page Title</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #273c75;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        h1 {
-            font-size: 48px;
+        .success-message {
+            font-weight: bold;
+            font-size: 18px;
+            color: green;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Login Successful! <%= (String) session.getAttribute("email") %> </h1>
+
+<jsp:useBean id="successMessageBean" class="fr.javatheque.beans.SuccessMessageBean" scope="request" />
+
+<c:if test="${not empty successMessageBean.successMessage}">
+    <div class="success-message">
+            ${successMessageBean.successMessage}
+    </div>
+</c:if>
+
 </body>
 </html>

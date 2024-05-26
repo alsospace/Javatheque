@@ -44,7 +44,7 @@ public class UserRepository {
      * @return The created user object.
      */
     public User createUser(User user) {
-        libraryRepository.createLibrary(user.getLibrary());
+        this.libraryRepository.createLibrary(user.getLibrary());
         Document document = createUserDocument(user);
         collection.insertOne(document);
         return user;
@@ -128,7 +128,7 @@ public class UserRepository {
 
     private User documentToUser(Document document) {
         String id = document.getString(USER_ID_KEY);
-        Library library = libraryRepository.getLibraryById(document.getString(LIBRARY_ID_KEY));
+        Library library = this.libraryRepository.getLibraryById(document.getString(LIBRARY_ID_KEY));
         String lastname = document.getString(LASTNAME_KEY);
         String firstname = document.getString(FIRSTNAME_KEY);
         String email = document.getString(EMAIL_KEY);
