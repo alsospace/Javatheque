@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>.NETFlix - Register</title>
+    <title>.NETFlix - Search film</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,12 +15,12 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            flex-direction: column;
+            flex-direction: column; 
         }
 
         a {
             text-decoration: none;
-            color: inherit;
+            color: inherit; 
         }
 
         h1 {
@@ -42,9 +42,11 @@
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
+            color: #333;
         }
 
-        input {
+        input,
+        select {
             width: 100%;
             padding: 8px;
             margin-bottom: 16px;
@@ -67,24 +69,31 @@
         }
     </style>
 </head>
+</head>
 <body>
+    <h1><a href="/">.NETFlix</a></h1>
 
-<h1><a href="/">.NETFlix</a></h1>
+    <form id="search_existant_films" action="/search_existant_films" method="GET">
+        <label for="title">Title: </label>
+        <input type="text" id="title" name="title" required>
 
-<form id="register_user" action="register" method="POST">
-    <label for="lastname">Name: </label>
-    <input type="text" id="lastname" name="lastname" required>
+        <label for="lang">Language: </label>
+        <select id="lang" name="lang">
+            <option value="fr-FR" selected>French (fr-FR)</option>
+            <option value="en-US">English (en-US)</option>
+        </select>
 
-    <label for="firstname">Firstname: </label>
-    <input type="text" id="firstname" name="firstname" required>
+        <label for="support">Support: </label>
+        <select id="support" name="support">
+            <option value="CD" selected>CD</option>
+            <option value="DVD">DVD</option>
+            <option value="Blu-ray">Blu-ray</option>
+            <option value="USB">USB</option>
+            <option value="Streaming">Streaming</option>
+        </select>
+        <input type="hidden" name="page" value="1">
 
-    <label for="email">Email :</label>
-    <input type="email" id="email" name="email" required>
-
-    <label for="password">Password: </label>
-    <input type="password" id="password" name="password" required>
-
-    <button type="submit">Register</button>
-</form>
+        <button type="submit">Search</button>
+    </form>
 </body>
 </html>

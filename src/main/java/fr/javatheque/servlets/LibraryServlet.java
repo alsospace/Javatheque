@@ -1,7 +1,6 @@
 package fr.javatheque.servlets;
 
 import fr.javatheque.beans.ErrorMessageBean;
-import fr.javatheque.beans.SuccessMessageBean;
 import fr.javatheque.beans.UserBean;
 import fr.javatheque.database.model.User;
 import fr.javatheque.database.repository.UserRepository;
@@ -12,41 +11,31 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name="LoginServlet",urlPatterns = {"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name="LibraryServlet",urlPatterns = {"/library"})
+public class LibraryServlet extends HttpServlet {
     @Inject
     private ErrorMessageBean errorMessageBean;
-
-    @Inject
-    private UserBean userBean;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/views/login.jsp").forward(request, response);
-    }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String email = (String) request.getSession().getAttribute("email");
 
         UserRepository ur = new UserRepository();
         Optional<User> target = ur.getUserByEmail(email);
 
-        if (target.isPresent() && PasswordUtil.verifyPassword(password, target.get().getPassword())) {
+        if (target.isPresent()) {
             User user = target.get();
-            this.userBean.setUserId(user.getId());
-            this.userBean.setLastname(user.getLastname());
-            this.userBean.setFirstname(user.getFirstname());
+            request.setAttribute("films", user.getLibrary().getFilms());
         } else {
-            this.errorMessageBean.setErrorMessage("No user or incorrect password.");
+            this.errorMessageBean.setErrorMessage("User not found.");
         }
+
         request.getRequestDispatcher("/views/library.jsp").forward(request, response);
     }
 }

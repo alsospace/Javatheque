@@ -25,6 +25,14 @@
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>LibraryServlet</servlet-name>
+		<servlet-class>fr.javatheque.servlets.LibraryServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LibraryServlet</servlet-name>
+		<url-pattern>/library</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>WelcomeServlet</servlet-name>
 		<servlet-class>fr.javatheque.servlets.WelcomeServlet</servlet-class>
 	</servlet>
@@ -32,5 +40,14 @@
 		<servlet-name>WelcomeServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	    <servlet>
+        <servlet-name>FilmServlet</servlet-name>
+        <servlet-class>fr.javatheque.servlets.FilmServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>FilmServlet</servlet-name>
+        <url-pattern>/films/*</url-pattern>
+    </servlet-mapping>
 </web-app>
 
