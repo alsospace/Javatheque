@@ -124,8 +124,7 @@ public class FilmServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getPathInfo();
 
         if (action.startsWith("/delete")) {
@@ -136,14 +135,5 @@ public class FilmServlet extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-    }
-
-    private boolean checkUserIsLogged(HttpServletRequest request){
-        String userID = (String) request.getSession().getAttribute("userID");
-
-        UserRepository ur = new UserRepository();
-        Optional<User> target = ur.getUserById(userID);
-
-        return target.isEmpty();
     }
 }

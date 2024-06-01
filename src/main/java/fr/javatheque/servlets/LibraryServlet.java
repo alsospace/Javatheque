@@ -43,7 +43,7 @@ public class LibraryServlet extends HttpServlet {
         }
 
         request.setAttribute("films", films);
-        request.getRequestDispatcher("/views/library.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/film/library.jsp").forward(request, response);
     }
 
     private List<Film> searchFilmsInLibrary(Library library, String searchQuery) {
