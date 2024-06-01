@@ -238,15 +238,15 @@
 
     <script>
         function redirectToLogout() {
-            window.location.href = "{pageContext.request.contextPath}/logout";
+            window.location.href = "${pageContext.request.contextPath}/logout";
         }
 
         function redirectToLogin() {
-            window.location.href = "{pageContext.request.contextPath}/login";
+            window.location.href = "${pageContext.request.contextPath}/login";
         }
 
         function redirectToSearchFilm() {
-            window.location.href = "{pageContext.request.contextPath}/films/search";
+            window.location.href = "${pageContext.request.contextPath}/films/search";
         }
 
         function deleteFilm(id, search) {
