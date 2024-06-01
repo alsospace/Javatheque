@@ -21,30 +21,30 @@
             overflow-y: auto;
             overflow-x: hidden;
         }
-    
+
         body::-webkit-scrollbar {
             display: none;
         }
-    
+
         h1 {
             margin: 20px 0;
         }
-    
+
         .error-message,
         .success-message {
             font-weight: bold;
             font-size: 18px;
             margin: 10px 0;
         }
-    
+
         .error-message {
             color: #eb3b5a;
         }
-    
+
         .success-message {
             color: green;
         }
-    
+
         #logout,
         #login,
         #add-film,
@@ -57,17 +57,17 @@
             cursor: pointer;
             font-size: 14px;
         }
-    
+
         #add-film {
             background-color: #2ecc71;
             color: #fff;
         }
-    
+
         #logout {
             background-color: #e74c3c;
             color: #fff;
         }
-    
+
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -78,11 +78,11 @@
             border-radius: 5px;
             margin: 10px;
         }
-    
+
         button:hover {
             background-color: #e056fd;
         }
-    
+
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -91,18 +91,18 @@
             padding: 20px;
             background-color: #192a56;
         }
-    
+
         .header-container h1 {
             margin: 0;
             text-align: center;
         }
-    
+
         .film-card-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
         }
-    
+
         .film-card {
             background-color: #2c3e50;
             padding: 20px;
@@ -115,34 +115,34 @@
             flex-direction: column;
             align-items: center;
         }
-    
+
         .film-card:hover {
             background-color: #34495e;
         }
-    
+
         .film-card img {
             width: 100%;
             border-radius: 4px;
             margin-bottom: 10px;
         }
-    
+
         .film-details {
             color: #fff;
             width: 100%;
             text-align: center;
         }
-    
+
         .film-details p {
             margin: 0;
         }
-    
+
         form.inline-buttons {
             display: flex;
             justify-content: space-around;
             width: 100%;
             margin-top: 10px;
         }
-    
+
         form.inline-buttons button {
             background-color: #3498db;
             color: #fff;
@@ -151,36 +151,36 @@
             padding: 8px;
             flex-grow: 1;
         }
-    
+
         .search-container {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-top: 20px;
         }
-    
+
         #search-form {
             display: flex;
             width: 60%;
         }
-    
+
         #search-bar,
         #search-button {
             padding: 10px;
             border: none;
             border-radius: 10px;
         }
-    
+
         #search-bar {
             flex-grow: 1;
         }
-    
+
         #search-button {
             background-color: #3498db;
             color: #fff;
             cursor: pointer;
         }
-    
+
         #search-button:hover {
             background-color: #2980b9;
         }
@@ -188,53 +188,64 @@
 
 </head>
 <body>
-    <div class="error-message">
-        <c:if test="${not empty errorMessageBean.errorMessage}">
-            <p>${errorMessageBean.errorMessage}</p>
-        </c:if>
+<div class="error-message">
+    <c:if test="${not empty errorMessageBean.errorMessage}">
+        <p>${errorMessageBean.errorMessage}</p>
+    </c:if>
+</div>
+
+<div class="success-message">
+    <c:if test="${not empty successMessageBean.successMessage}">
+        <p>${successMessageBean.successMessage}</p>
+    </c:if>
+</div>
+
+<c:if test="${not empty sessionScope.user}">
+    <div class="header-container">
+        <button id="add-film" onclick='redirectToAddFilm()'>Search film to add</button>
+        <h1>.NETFlix</h1>
+        <button id="logout" onclick='redirectToLogout()'>Logout</button>
     </div>
 
-    <div class="success-message">
-        <c:if test="${not empty successMessageBean.successMessage}">
-            <p>${successMessageBean.successMessage}</p>
-        </c:if>
+    <div class="search-container">
+        <form id="search-form" action="${pageContext.request.contextPath}/library" method="get">
+            <input type="text" id="search-bar" name="search" placeholder="Search..." value="${param.search != 'all' ? param.search : ''}">
+            <button type="submit" id="search-button">Search</button>
+        </form>
     </div>
 
-    <c:if test="${not empty sessionScope.userID}">
-        <div class="header-container">
-            <button id="search-film" onclick='redirectToSearchFilm()'>Search film to add</button>
-            <h1>.NETFlix</h1>
-            <button id="logout" onclick='redirectToLogout()'>Logout</button>
-        </div>
-
-        <div class="search-container">
-            <form id="search-form" action="${pageContext.request.contextPath}/film/library" method="GET">
-                <input type="text" id="search-bar" name="search" placeholder="Search..." value="${param.search != 'all' ? param.search : ''}">
-                <button type="submit" id="search-button">Search</button>
-            </form>
-        </div>
-
-        <div class="film-card-container">
-            <c:forEach var="film" items="${films}">
-                <div class="film-card">
-                    <img src="${film.poster}" alt="${film.title}">
-                    <div class="film-details">
-                        <p>${film.title}</p>
-                        <p><em>${film.year}</em></p>
-                        <p><strong>${film.support}</strong> (${film.lang})</p>
-                        <form action="${pageContext.request.contextPath}/film/show" method="GET" class="inline-buttons">
-                            <input type="hidden" name="tmdbId" value="${film.id}">
-                            <button type="submit" style="background-color: #6ab04c;">Consult</button>
-                        </form>
-                        <button type="submit" style="background-color: #eb3b5a;" onclick="deleteFilm('${film.id}', '${param.search}')">Delete</button>
+    <div class="film-card-container">
+        <c:choose>
+            <c:when test="${not empty films}">
+                <c:forEach var="film" items="${films}">
+                    <div class="film-card">
+                        <img src="${film.poster}" alt="${film.title}">
+                        <div class="film-details">
+                            <p>${film.title}</p>
+                            <p><em>${film.year}</em></p>
+                            <p><strong>${film.support}</strong> (${film.lang})</p>
+                            <form action="${pageContext.request.contextPath}/films/show" method="get" class="inline-buttons">
+                                <input type="hidden" name="id" value="${film.id}">
+                                <button type="submit" style="background-color: #6ab04c;">View</button>
+                            </form>
+                            <form action="${pageContext.request.contextPath}/films/delete" method="post" class="inline-buttons">
+                                <input type="hidden" name="id" value="${film.id}">
+                                <button type="submit" style="background-color: #eb3b5a;">Delete</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </c:forEach>
-        </div>
-    </c:if>
-    <c:if test="${empty sessionScope.userID}">
-        <button id="login" onclick='redirectToLogin()'>Login</button>
-    </c:if>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <p>No films found in your library.</p>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</c:if>
+
+<c:if test="${empty sessionScope.user}">
+    <button id="login" onclick='redirectToLogin()'>Login</button>
+</c:if>
 
     <script>
         function redirectToLogout() {
@@ -245,8 +256,8 @@
             window.location.href = "${pageContext.request.contextPath}/login";
         }
 
-        function redirectToSearchFilm() {
-            window.location.href = "${pageContext.request.contextPath}/film/search";
+        function redirectToAddFilm() {
+            window.location.href = "${pageContext.request.contextPath}/film/add";
         }
 
         function deleteFilm(id, search) {
@@ -272,7 +283,7 @@
         }
 
         document.getElementById('search-form').addEventListener('submit', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
 
             const searchBar = document.getElementById('search-bar');
             const searchValue = searchBar.value.trim();

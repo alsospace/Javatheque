@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Film {
     private final int id;
-    private final String libraryId;
+    private String libraryId;
     private String poster;
     private String lang;
     private String support;
@@ -44,6 +44,10 @@ public class Film {
 
     public String getLibraryId() {
         return libraryId;
+    }
+
+    public void setLibraryId(String libraryId) {
+        this.libraryId = libraryId;
     }
 
     public String getPoster() {
