@@ -69,7 +69,7 @@
 </head>
 <body>
 
-<h1><a href="/">.NETFlix</a></h1>
+<h1><a href="${pageContext.request.contextPath}/">.NETFlix</a></h1>
 
 <form id="register_user" action="register" method="POST">
     <label for="lastname">Name: </label>

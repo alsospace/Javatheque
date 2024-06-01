@@ -109,7 +109,7 @@
                             <img src="https://image.tmdb.org/t/p/w220_and_h330_face/${movie.poster_path}" alt="${movie.title}" width="100">
                             <p>${movie.title}</p>
                             <p><em>${movie.release_date}</em></p>
-                            <form action="{pageContext.request.contextPath}/films/add" method="POST">
+                            <form action="${pageContext.request.contextPath}/films/add" method="POST">
                                 <input type="hidden" name="tmdbId" value="${movie.id}">
                                 <input type="hidden" name="lang" value="${param.lang}">
                                 <input type="hidden" name="support" value="${param.support}">
@@ -129,7 +129,7 @@
     
     <div style="text-align: center; margin-top: 20px; display: flex; justify-content: space-between;">
         <c:if test="${searchResults.page > 1}">
-            <form action="{pageContext.request.contextPath}/films/search" method="GET">
+            <form action="${pageContext.request.contextPath}/films/search" method="GET">
                 <input type="hidden" name="query" value="${param.query}">
                 <input type="hidden" name="language" value="${param.language}">
                 <input type="hidden" name="page" value="${searchResults.page - 1}">
@@ -138,7 +138,7 @@
         </c:if>
 
         <c:if test="${searchResults.page < searchResults.total_pages}">
-            <form action="{pageContext.request.contextPath}/films/search" method="GET">
+            <form action="${pageContext.request.contextPath}/films/search" method="GET">
                 <input type="hidden" name="query" value="${param.query}">
                 <input type="hidden" name="language" value="${param.language}">
                 <input type="hidden" name="page" value="${searchResults.page + 1}">
@@ -148,7 +148,7 @@
     </div>
     
     <div style="text-align: center; margin-top: 20px;">
-        <a href="{pageContext.request.contextPath}/films/search">New Search</a>
+        <a href="${pageContext.request.contextPath}/films/search">New Search</a>
     </div>
 </body>
 </html>

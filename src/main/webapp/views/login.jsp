@@ -70,7 +70,7 @@
 </head>
 <body>
 
-<h1><a href="/">.NETFlix</a></h1>
+<h1><a href="${pageContext.request.contextPath}/">.NETFlix</a></h1>
 
 <form id="login_user" action="login" method="POST">
     <label for="email">Email: </label>

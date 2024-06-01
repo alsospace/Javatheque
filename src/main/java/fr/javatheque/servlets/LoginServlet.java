@@ -44,6 +44,10 @@ public class LoginServlet extends HttpServlet {
             this.userBean.setUserId(user.getId());
             this.userBean.setLastname(user.getLastname());
             this.userBean.setFirstname(user.getFirstname());
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute("userID", user.getId());
+
         } else {
             this.errorMessageBean.setErrorMessage("No user or incorrect password.");
         }

@@ -200,7 +200,7 @@
         </c:if>
     </div>
 
-    <c:if test="${not empty userBean.userId}">
+    <c:if test="${not empty sessionScope.userID}">
         <div class="header-container">
             <button id="search-film" onclick='redirectToSearchFilm()'>Search film to add</button>
             <h1>.NETFlix</h1>
@@ -232,7 +232,7 @@
             </c:forEach>
         </div>
     </c:if>
-    <c:if test="${empty userBean.userId}">
+    <c:if test="${empty sessionScope.userID}">
         <button id="login" onclick='redirectToLogin()'>Login</button>
     </c:if>
 
@@ -252,7 +252,7 @@
         function deleteFilm(id, search) {
             let result = confirm("Are you sure? This will permanently delete this film!");
             if (result) {
-                fetch("{pageContext.request.contextPath}/films/" + id + "/delete", {
+                fetch("${pageContext.request.contextPath}/films/" + id + "/delete", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -263,7 +263,7 @@
                 })
                 .then(function(response){
                   console.log("Success", response);
-                  window.location.href = '{pageContext.request.contextPath}/library?search=' + search;
+                  window.location.href = '${pageContext.request.contextPath}/library?search=' + search;
                 })
                 .catch(function(){
                   console.log("Error", response);
@@ -278,9 +278,9 @@
             const searchValue = searchBar.value.trim();
 
             if (searchValue !== "") {
-                window.location.href = '{pageContext.request.contextPath}/library?search=' + encodeURIComponent(searchValue);
+                window.location.href = '${pageContext.request.contextPath}/library?search=' + encodeURIComponent(searchValue);
             } else {
-                window.location.href = '{pageContext.request.contextPath}/library?search=all';
+                window.location.href = '${pageContext.request.contextPath}/library?search=all';
             }
         });
         </script>

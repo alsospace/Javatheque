@@ -79,7 +79,7 @@
     </style>
 </head>
 <body>
-    <h1><a href="{pageContext.request.contextPath}/library?search=all" style="text-decoration: none;">.NETFlix</a></h1>
+    <h1><a href="${pageContext.request.contextPath}/library?search=all" style="text-decoration: none;">.NETFlix</a></h1>
 
     <div class="error-message">
         <c:if test="${not empty errorMessageBean.errorMessage}">
@@ -118,7 +118,7 @@
         </ul>
         <p>[others actors..]</p>
 
-        <form action="{pageContext.request.contextPath}/films/edit" method="GET" class="inline-buttons">
+        <form action="${pageContext.request.contextPath}/films/edit" method="GET" class="inline-buttons">
             <input type="hidden" name="tmdbId" value="${filmBean.id}">
             <button type="submit" style="background-color: #F97F51;">Edit</button>
         </form>

@@ -76,7 +76,6 @@ public class FilmServlet extends HttpServlet {
         String action = request.getPathInfo();
 
         if (action.equals("/add")) {
-            // Ajouter un film à la vidéothèque de l'utilisateur
             String userId = request.getParameter("userId");
             int tmdbId = Integer.parseInt(request.getParameter("tmdbId"));
             String lang = request.getParameter("lang");
