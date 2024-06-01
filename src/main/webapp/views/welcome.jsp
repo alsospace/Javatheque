@@ -72,15 +72,15 @@
 
 <jsp:useBean id="userBean" class="fr.javatheque.beans.UserBean" scope="request" />
 
-<c:if test="${not empty userBean.userId}">
+<c:if test="${not empty sessionScope.userID}">
     <p class="welcome">Welcome <span style="color: #F97F51;"><strong>${userBean.lastname} ${userBean.firstname}</strong></span>!</p>
-    <form action="${pageContext.request.contextPath}/library" method="GET">
+    <form action="${pageContext.request.contextPath}/film/library" method="GET">
         <input type="hidden" name="search" value="all">
         <button type="submit" onclick="redirectToLibrary()"  id="library">Go to Library</button>
     </form>
     <button id="logout" style="background-color: #eb3b5a;" onclick="redirectToLogout()">Logout</button>
 </c:if>
-<c:if test="${empty userBean.userId}">
+<c:if test="${empty sessionScope.userID}">
     <button id="loginBtn" onclick="redirectToLogin()">Login</button>
     <button id="registerBtn" onclick="redirectToRegister()">Register</button>
 </c:if>
@@ -95,7 +95,7 @@
     }
 
     function redirectToLibrary() {
-        window.location.href = "${pageContext.request.contextPath}/library";
+        window.location.href = "${pageContext.request.contextPath}/film//library";
     }
 
     function redirectToLogout() {

@@ -46,10 +46,10 @@ public class LoginServlet extends HttpServlet {
 
             HttpSession session = request.getSession(true);
             session.setAttribute("userID", user.getId());
-
         } else {
-            this.errorMessageBean.setErrorMessage("No user or incorrect password.");
+            this.errorMessageBean.setErrorMessage("No user found or incorrect password.");
         }
-        request.getRequestDispatcher("/views/library.jsp").forward(request, response);
+
+        request.getRequestDispatcher("/views/welcome.jsp").forward(request, response);
     }
 }

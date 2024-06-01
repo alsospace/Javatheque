@@ -208,7 +208,7 @@
         </div>
 
         <div class="search-container">
-            <form id="search-form" action="/library" method="GET">
+            <form id="search-form" action="${pageContext.request.contextPath}/film/library" method="GET">
                 <input type="text" id="search-bar" name="search" placeholder="Search..." value="${param.search != 'all' ? param.search : ''}">
                 <button type="submit" id="search-button">Search</button>
             </form>
@@ -222,7 +222,7 @@
                         <p>${film.title}</p>
                         <p><em>${film.year}</em></p>
                         <p><strong>${film.support}</strong> (${film.lang})</p>
-                        <form action="/films/show" method="GET" class="inline-buttons">
+                        <form action="${pageContext.request.contextPath}/film/show" method="GET" class="inline-buttons">
                             <input type="hidden" name="tmdbId" value="${film.id}">
                             <button type="submit" style="background-color: #6ab04c;">Consult</button>
                         </form>
@@ -246,13 +246,13 @@
         }
 
         function redirectToSearchFilm() {
-            window.location.href = "${pageContext.request.contextPath}/films/search";
+            window.location.href = "${pageContext.request.contextPath}/film/search";
         }
 
         function deleteFilm(id, search) {
             let result = confirm("Are you sure? This will permanently delete this film!");
             if (result) {
-                fetch("${pageContext.request.contextPath}/films/" + id + "/delete", {
+                fetch("${pageContext.request.contextPath}/film/" + id + "/delete", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name = "FilmServlet", urlPatterns = {"/films/*"})
+@WebServlet(name = "FilmServlet", urlPatterns = {"/film/*"})
 public class FilmServlet extends HttpServlet {
     @Inject
     private ErrorMessageBean errorMessageBean;
