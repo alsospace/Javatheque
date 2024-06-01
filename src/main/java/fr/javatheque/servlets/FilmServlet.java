@@ -28,6 +28,16 @@ public class FilmServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getPathInfo();
 
+        String userID = (String) request.getSession().getAttribute("userID");
+
+        UserRepository ur = new UserRepository();
+        Optional<User> target = ur.getUserById(userID);
+
+        if (target.isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         if (action == null || action.equals("/")) {
             request.getRequestDispatcher("/views/film/library.jsp").forward(request, response);
         } else if (action.equals("/search")) {
