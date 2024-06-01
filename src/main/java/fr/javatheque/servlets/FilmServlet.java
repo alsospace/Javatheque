@@ -6,6 +6,7 @@ import fr.javatheque.database.model.Film;
 import fr.javatheque.database.model.User;
 import fr.javatheque.database.repository.FilmRepository;
 import fr.javatheque.database.repository.UserRepository;
+import fr.javatheque.util.TMDBApiClient;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,7 +37,7 @@ public class FilmServlet extends HttpServlet {
             String language = request.getParameter("language");
             int page = Integer.parseInt(request.getParameter("page"));
 
-            TMDBApiClient tmdbApiClient = new TMDBApiClient();
+            TMDBApiClient tmdbApiClient = TMDBApiClient.getInstance();
             String searchResults = tmdbApiClient.searchMovies(query, language, page);
 
             request.setAttribute("searchResults", searchResults);

@@ -1,7 +1,6 @@
 package fr.javatheque.servlets;
 
 import fr.javatheque.beans.ErrorMessageBean;
-import fr.javatheque.beans.SuccessMessageBean;
 import fr.javatheque.beans.UserBean;
 import fr.javatheque.database.model.User;
 import fr.javatheque.database.repository.UserRepository;
@@ -17,7 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name="LoginServlet",urlPatterns = {"/login"})
+@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
     @Inject
     private ErrorMessageBean errorMessageBean;

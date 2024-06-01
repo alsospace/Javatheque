@@ -1,10 +1,8 @@
 package fr.javatheque.servlets;
 
 import fr.javatheque.beans.ErrorMessageBean;
-import fr.javatheque.beans.UserBean;
 import fr.javatheque.database.model.User;
 import fr.javatheque.database.repository.UserRepository;
-import fr.javatheque.util.PasswordUtil;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name="LibraryServlet",urlPatterns = {"/library"})
+@WebServlet(name = "LibraryServlet", urlPatterns = {"/library"})
 public class LibraryServlet extends HttpServlet {
     @Inject
     private ErrorMessageBean errorMessageBean;

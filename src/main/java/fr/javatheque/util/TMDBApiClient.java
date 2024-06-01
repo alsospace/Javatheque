@@ -1,12 +1,10 @@
-package fr.javatheque.utils;
+package fr.javatheque.util;
+
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 
 public class TMDBApiClient {
     private static final String TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
@@ -27,7 +25,6 @@ public class TMDBApiClient {
     }
 
     public String searchMovies(String title, String language, int page) throws IOException {
-        String encodedQuery = URLEncoder.encode(title, StandardCharsets.UTF_8);
         String url = TMDB_API_BASE_URL + "/search/movie?query=" + title +
                 "&language=" + language +
                 "&page=" + page;
