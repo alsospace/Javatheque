@@ -252,7 +252,7 @@
         function deleteFilm(id, search) {
             let result = confirm("Are you sure? This will permanently delete this film!");
             if (result) {
-                fetch("/films/" + id + "/delete", {
+                fetch("{pageContext.request.contextPath}/films/" + id + "/delete", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

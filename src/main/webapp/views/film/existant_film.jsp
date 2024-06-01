@@ -5,8 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <title>.NETFlix - Search</title>
+    <title>.NETFlix - Search Results</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -91,62 +90,65 @@
             }
         }
     </style>
-
 </head>
 <body>
-    <h1 style="display: flex; align-items: center; justify-content: space-between;">
-        Result for: ${param.title}
-        <a href="/films/search" style="text-decoration: none;">
-            <button style="background-color: #db34c5;">Back to Search</button>
-        </a>
-    </h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Film</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach var="film" items="${films}">
+    <h1>Search Results</h1>
+    
+    <c:if test="${not empty searchResults}">
+        <table>
+            <thead>
                 <tr>
-                    <td>
-                        <img src="https://image.tmdb.org/t/p/w220_and_h330_face/${film.posterPath}" alt="${film.title}" width="100">
-                        <p>${film.title}</p>
-                        <p><em>${film.releaseDate}</em></p>
-                        <form action="/films/add" method="POST">
-                            <input type="hidden" name="tmdbId" value="${film.id}">
-                            <input type="hidden" name="lang" value="${param.lang}">
-                            <input type="hidden" name="support" value="${param.support}">
-                            <button type="submit">Add to my library</button>
-                        </form>
-                    </td>
-                    <td>${film.overview}</td>
+                    <th>Film</th>
+                    <th>Description</th>
                 </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-
+            </thead>
+            <tbody>
+                <c:forEach var="movie" items="${searchResults.results}">
+                    <tr>
+                        <td>
+                            <img src="https://image.tmdb.org/t/p/w220_and_h330_face/${movie.poster_path}" alt="${movie.title}" width="100">
+                            <p>${movie.title}</p>
+                            <p><em>${movie.release_date}</em></p>
+                            <form action="{pageContext.request.contextPath}/films/add" method="POST">
+                                <input type="hidden" name="tmdbId" value="${movie.id}">
+                                <input type="hidden" name="lang" value="${param.lang}">
+                                <input type="hidden" name="support" value="${param.support}">
+                                <button type="submit">Add to my library</button>
+                            </form>
+                        </td>
+                        <td>${movie.overview}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+    </c:if>
+    
+    <c:if test="${empty searchResults.results}">
+        <p>No results found.</p>
+    </c:if>
+    
     <div style="text-align: center; margin-top: 20px; display: flex; justify-content: space-between;">
-        <c:if test="${prevPage}">
-            <form action="/search_existant_films" method="GET">
-                <input type="hidden" name="title" value="${param.title}">
-                <input type="hidden" name="support" value="${param.support}">
-                <input type="hidden" name="lang" value="${param.lang}">
-                <input type="hidden" name="page" value="${prevPage}">
+        <c:if test="${searchResults.page > 1}">
+            <form action="{pageContext.request.contextPath}/films/search" method="GET">
+                <input type="hidden" name="query" value="${param.query}">
+                <input type="hidden" name="language" value="${param.language}">
+                <input type="hidden" name="page" value="${searchResults.page - 1}">
                 <button type="submit" style="background-color: #2a8f03;"> << Previous Page</button>
             </form>
         </c:if>
 
-        <c:if test="${nextPage}">
-            <form action="/search_existant_films" method="GET">
-                <input type="hidden" name="title" value="${param.title}">
-                <input type="hidden" name="support" value="${param.support}">
-                <input type="hidden" name="lang" value="${param.lang}">
-                <input type="hidden" name="page" value="${nextPage}">
+        <c:if test="${searchResults.page < searchResults.total_pages}">
+            <form action="{pageContext.request.contextPath}/films/search" method="GET">
+                <input type="hidden" name="query" value="${param.query}">
+                <input type="hidden" name="language" value="${param.language}">
+                <input type="hidden" name="page" value="${searchResults.page + 1}">
                 <button type="submit" style="background-color: #2a8f03;">Next Page >></button>
             </form>
         </c:if>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{pageContext.request.contextPath}/films/search">New Search</a>
     </div>
 </body>
 </html>

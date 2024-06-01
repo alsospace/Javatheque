@@ -30,13 +30,20 @@ public class FilmServlet extends HttpServlet {
         String action = request.getPathInfo();
 
         if (action == null || action.equals("/")) {
-            // Afficher la liste des films
             request.getRequestDispatcher("/views/film/library.jsp").forward(request, response);
         } else if (action.equals("/search")) {
-            // Afficher le formulaire de recherche de film
+            String query = request.getParameter("query");
+            String language = request.getParameter("language");
+            int page = Integer.parseInt(request.getParameter("page"));
+
+            TMDBApiClient tmdbApiClient = new TMDBApiClient();
+            String searchResults = tmdbApiClient.searchMovies(query, language, page);
+
+            request.setAttribute("searchResults", searchResults);
+            request.getRequestDispatcher("/views/film/existant_film.jsp").forward(request, response);
+
             request.getRequestDispatcher("/views/film/search_film.jsp").forward(request, response);
         } else if (action.equals("/show")) {
-            // Afficher les détails d'un film
             int filmId = Integer.parseInt(request.getParameter("id"));
             FilmRepository filmRepository = new FilmRepository();
             Optional<Film> film = filmRepository.getFilmById(filmId);
@@ -48,7 +55,6 @@ public class FilmServlet extends HttpServlet {
                 request.getRequestDispatcher("/views/error.jsp").forward(request, response);
             }
         } else if (action.equals("/edit")) {
-            // Afficher le formulaire d'édition d'un film
             int filmId = Integer.parseInt(request.getParameter("id"));
             FilmRepository filmRepository = new FilmRepository();
             Optional<Film> film = filmRepository.getFilmById(filmId);

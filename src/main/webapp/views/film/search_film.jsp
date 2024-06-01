@@ -73,7 +73,7 @@
 <body>
     <h1><a href="/">.NETFlix</a></h1>
 
-    <form id="search_existant_films" action="/search_existant_films" method="GET">
+    <form id="search_existant_films" action="{pageContext.request.contextPath}/search_existant_films" method="GET">
         <label for="title">Title: </label>
         <input type="text" id="title" name="title" required>
 
