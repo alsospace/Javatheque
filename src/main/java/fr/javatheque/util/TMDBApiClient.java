@@ -28,29 +28,23 @@ public class TMDBApiClient {
         String url = TMDB_API_BASE_URL + "/search/movie?query=" + title +
                 "&language=" + language +
                 "&page=" + page;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("accept", "application/json")
-                .addHeader("Authorization", "Bearer " + TMDB_API_KEY)
-                .build();
-        Response response = httpClient.newCall(request).execute();
-        return response.body().string();
+         return getResponse(url);
 
     }
 
     public String getMovieDetails(int movieId, String language) throws IOException {
         String url = TMDB_API_BASE_URL + "/movie/" + movieId +
                 "?language=" + language;
+        return getResponse(url);
+    }
 
+    private String getResponse(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("Authorization", "Bearer " + TMDB_API_KEY)
                 .build();
-
         Response response = httpClient.newCall(request).execute();
         return response.body().string();
     }
