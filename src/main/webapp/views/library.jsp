@@ -223,7 +223,7 @@
                             <p>${film.title}</p>
                             <p><em>${film.year}</em></p>
                             <p><strong>${film.support}</strong> (${film.lang})</p>
-                            <form action="${pageContext.request.contextPath}/show" method="get" class="inline-buttons">
+                            <form action="${pageContext.request.contextPath}/film/show" method="get" class="inline-buttons">
                                 <input type="hidden" name="id" value="${film.id}">
                                 <button type="submit" style="background-color: #6ab04c;">Consult</button>
                             </form>
@@ -233,7 +233,7 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <p>No films found in your library.</p>
+                <p style="text-align: center;">No films found in your library.</p>
             </c:otherwise>
         </c:choose>
     </div>
@@ -253,13 +253,13 @@
     }
 
     function redirectToSearchFilm() {
-        window.location.href = "${pageContext.request.contextPath}/search";
+        window.location.href = "${pageContext.request.contextPath}/film/search";
     }
 
     function deleteFilm(id, search) {
         let result = confirm("Are you sure? This will permanently delete this film!");
         if (result) {
-            fetch("${pageContext.request.contextPath}/" + id + "/delete", {
+            fetch("${pageContext.request.contextPath}/film/" + id + "/delete", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

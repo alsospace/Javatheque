@@ -54,7 +54,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>FilmServlet</servlet-name>
-        <url-pattern>/film/*</url-pattern>
+		<url-pattern>/film/*</url-pattern>
     </servlet-mapping>
 </web-app>
 

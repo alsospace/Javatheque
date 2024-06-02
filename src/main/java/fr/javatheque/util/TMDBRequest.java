@@ -4,6 +4,12 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
 import java.io.IOException;
 
 public class TMDBRequest {
@@ -14,7 +20,30 @@ public class TMDBRequest {
     private final OkHttpClient httpClient;
 
     private TMDBRequest() {
-        this.httpClient = new OkHttpClient();
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                    }
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[]{};
+                    }
+                }
+        };
+
+        try {
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            this.httpClient = new OkHttpClient();
+            this.httpClient.setSslSocketFactory(sslContext.getSocketFactory());
+            this.httpClient.setHostnameVerifier((hostname, session) -> true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static synchronized TMDBRequest getInstance() {
