@@ -7,10 +7,8 @@ import com.squareup.okhttp.Response;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 
 public class TMDBRequest {
     private static final String TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
@@ -23,10 +21,13 @@ public class TMDBRequest {
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     @Override
-                    public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                    }
+
                     @Override
                     public void checkServerTrusted(X509Certificate[] chain, String authType) {
                     }
+
                     @Override
                     public X509Certificate[] getAcceptedIssuers() {
                         return new X509Certificate[]{};
@@ -66,9 +67,10 @@ public class TMDBRequest {
                 "?language=" + language;
         return getResponse(url);
     }
+
     public String getCreditDetails(int movieId, String language) throws IOException {
         String url = TMDB_API_BASE_URL + "/movie/" + movieId +
-                "?credits=" + language;
+                "/credits?language=" + language;
         return getResponse(url);
     }
 

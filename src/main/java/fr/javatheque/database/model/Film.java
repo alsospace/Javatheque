@@ -15,14 +15,14 @@ public class Film {
     private String title;
     private String description;
     private String releaseDate;
-    private int year;
+    private String year;
     private float rate;
     private String opinion;
     private Person director;
     private List<Person> actors;
 
     public Film(int id, String libraryId, String poster, String lang, String support, String title, String description,
-                String releaseDate, int year, float rate, String opinion, Person director, List<Person> actors) {
+                String releaseDate, String year, float rate, String opinion, Person director, List<Person> actors) {
         this.id = id;
         this.libraryId = libraryId;
         this.poster = poster;
@@ -98,11 +98,11 @@ public class Film {
         this.releaseDate = releaseDate;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

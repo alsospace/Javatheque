@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.javatheque.beans.ErrorMessageBean;
+import fr.javatheque.beans.SuccessMessageBean;
 import fr.javatheque.database.model.Film;
 import fr.javatheque.database.model.User;
 import fr.javatheque.database.repository.FilmRepository;
@@ -27,6 +28,9 @@ import java.util.Optional;
 public class FilmServlet extends HttpServlet {
     @Inject
     private ErrorMessageBean errorMessageBean;
+
+    @Inject
+    private SuccessMessageBean successMessageBean;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -73,7 +77,7 @@ public class FilmServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = getAction(request);
 
-        if (action.equalsIgnoreCase("/film//delete")) {
+        if (action.equalsIgnoreCase("/film/delete")) {
             deleteFilm(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -132,7 +136,7 @@ public class FilmServlet extends HttpServlet {
 
     private void editFilm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int filmId = Integer.parseInt(request.getParameter("id"));
+        int filmId = Integer.parseInt(request.getParameter("tmdbId"));
         FilmRepository filmRepository = new FilmRepository();
         Optional<Film> film = filmRepository.getFilmById(filmId);
         if (film.isPresent()) {
@@ -148,7 +152,7 @@ public class FilmServlet extends HttpServlet {
         String lang = request.getParameter("lang");
         String support = request.getParameter("support");
 
-        Film film = TMDBUtils.getFilmFromTMDB(tmdbId, lang, support);
+        Film film = TMDBUtils.getFilmFromTMDB(tmdbId, lang, support, response);
         film.setLibraryId(user.getLibrary().getId());
 
         FilmRepository filmRepository = new FilmRepository();
@@ -174,6 +178,7 @@ public class FilmServlet extends HttpServlet {
             updatedFilm.setRate(rate);
             updatedFilm.setOpinion(opinion);
             filmRepository.updateFilm(updatedFilm);
+            this.successMessageBean.setSuccessMessage("The film has been updated!");
             response.sendRedirect(request.getContextPath() + "/library");
         } else {
             handleFilmNotFound(request, response);
@@ -181,12 +186,11 @@ public class FilmServlet extends HttpServlet {
     }
 
     private void deleteFilm(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int filmId = Integer.parseInt(request.getParameter("id"));
+        int filmId = Integer.parseInt(request.getParameter("tmdbid"));
         FilmRepository filmRepository = new FilmRepository();
         filmRepository.deleteFilm(filmId);
         response.sendRedirect(request.getContextPath() + "/library");
     }
-
     private void handleFilmNotFound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         this.errorMessageBean.setErrorMessage("Film not found.");

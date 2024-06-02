@@ -123,7 +123,7 @@ public class FilmRepository {
         String title = document.getString("title");
         String description = document.getString("description");
         String releaseDate = document.getString("releaseDate");
-        int year = document.getInteger("year");
+        String year = document.getString("year");
         float rate = document.getDouble("rate").floatValue();
         String opinion = document.getString("opinion");
         Person director = personRepository.toPerson((Document) document.get("director"));

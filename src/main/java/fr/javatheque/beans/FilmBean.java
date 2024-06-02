@@ -8,7 +8,7 @@ import jakarta.inject.Named;
 public class FilmBean {
     private int id;
     private String title;
-    private int year;
+    private String year;
     private String support;
     private String lang;
     private String poster;
@@ -16,7 +16,7 @@ public class FilmBean {
     public FilmBean() {
     }
 
-    public FilmBean(int id, String title, int year, String support, String lang, String poster) {
+    public FilmBean(int id, String title, String year, String support, String lang, String poster) {
         this.id = id;
         this.title = title;
         this.year = year;
@@ -43,11 +43,11 @@ public class FilmBean {
         this.title = title;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

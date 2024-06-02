@@ -94,8 +94,8 @@
             <tr>
                 <td>
                     <img src="https://image.tmdb.org/t/p/w220_and_h330_face${movie.get('poster_path').getAsString()}" alt="${movie.get('title')}" width="100">
-                    <p>${movie.get('title')}</p>
-                    <p><em>${movie.get('release_date')}</em></p>
+                    <p>${movie.get('title').getAsString()}</p>
+                    <p><em>${movie.get('release_date').getAsString()}</em></p>
                     <form action="${pageContext.request.contextPath}/film/add" method="POST">
                         <input type="hidden" name="tmdbId" value="${movie.get('id')}">
                         <input type="hidden" name="lang" value="${param.lang}">
@@ -103,7 +103,7 @@
                         <button type="submit">Add to my library</button>
                     </form>
                 </td>
-                <td>${movie.get('overview')}</td>
+                <td>${movie.get('overview').getAsString()}</td>
             </tr>
         </c:forEach>
         </tbody>
@@ -132,10 +132,6 @@
             <button type="submit" style="background-color: #2a8f03;">Next Page >></button>
         </form>
     </c:if>
-</div>
-
-<div style="text-align: center; margin-top: 20px;">
-    <a href="${pageContext.request.contextPath}/film/search">New Search</a>
 </div>
 </body>
 </html>

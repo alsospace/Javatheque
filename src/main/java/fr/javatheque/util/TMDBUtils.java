@@ -6,8 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.javatheque.database.model.Film;
 import fr.javatheque.database.model.Person;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +21,7 @@ public class TMDBUtils {
     private static final Gson gson = new Gson();
     private static final int MAX_ACTORS = 10;
 
-    public static Film getFilmFromTMDB(int id, String lang, String support) throws IOException {
+    public static Film getFilmFromTMDB(int id, String lang, String support, HttpServletResponse response) throws IOException {
         JsonObject movieDetails = getJsonObjectFromApi(TMDB_REQUEST.getMovieDetails(id, lang));
         JsonObject movieCredits = getJsonObjectFromApi(TMDB_REQUEST.getCreditDetails(id, lang));
 
@@ -27,13 +29,16 @@ public class TMDBUtils {
         String title = movieDetails.get("title").getAsString();
         String description = movieDetails.get("overview").getAsString();
         String releaseDate = movieDetails.get("release_date").getAsString();
-        int year = Integer.parseInt(releaseDate.substring(0, 4));
+        String year = releaseDate.split("-")[0];
+        if (year.isEmpty()){
+            year = "No year found";
+        }
 
-        Person director = getDirectorFromCredits(movieCredits.getAsJsonArray("crew"));
-        List<Person> actors = getActorsFromCredits(movieCredits.getAsJsonArray("cast"));
+//        Person director = getDirectorFromCredits(movieCredits.getAsJsonArray("cast"));
+//        List<Person> actors = getActorsFromCredits(movieCredits.getAsJsonArray("cast"));
 
         return new Film(id, null, poster, lang, support, title, description, releaseDate, year,
-                0.0f, "", director, actors);
+                0.0f, "no opinion yet",  new Person("Jphn", "Doe"), new ArrayList<>());
     }
 
     private static JsonObject getJsonObjectFromApi(String json) {

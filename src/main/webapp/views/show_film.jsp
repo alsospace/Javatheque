@@ -81,45 +81,39 @@
 <body>
     <h1><a href="${pageContext.request.contextPath}/library?search=all" style="text-decoration: none;">.NETFlix</a></h1>
 
-    <div class="error-message">
-        <c:if test="${not empty errorMessageBean.errorMessage}">
-            <p>${errorMessageBean.errorMessage}</p>
-        </c:if>
-    </div>
-
-    <div class="success-message">
-        <c:if test="${not empty successMessageBean.successMessage}">
-            <p>${successMessageBean.successMessage}</p>
-        </c:if>
+    <div>
+        <%@ include file="success.jsp" %>
+        <%@ include file="error.jsp" %>
     </div>
 
     <div class="film-details">
-        <img src="${filmBean.poster}" alt="${filmBean.title} Poster">
+        <img src="https://image.tmdb.org/t/p/w220_and_h330_face${film.poster}" alt="${film.title} Poster">
 
-        <h2>${filmBean.title} (${filmBean.year})</h2>
+        <h2>${film.title} (${film.year})</h2>
 
-        <p><strong>Language:</strong> ${filmBean.lang}</p>
-        <p><strong>Support:</strong> ${filmBean.support}</p>
-        <p><strong>Release date:</strong> ${filmBean.releaseDate}</p>
-        <p><strong>Rate:</strong> ${filmBean.rate}/10</p>
-        <p><strong>Opinion:</strong> ${filmBean.opinion}</p>
+        <p><strong>Language:</strong> ${film.lang}</p>
+        <p><strong>Support:</strong> ${film.support}</p>
+        <p><strong>Release date:</strong> ${film.releaseDate}</p>
+        <p><strong>Rate:</strong> ${film.rate}/10</p>
+        <p><strong>Opinion:</strong> ${film.opinion}</p>
 
         <h3>Description</h3>
-        <p>${filmBean.description}</p>
+        <p>${film.description}</p>
 
         <h3>Director</h3>
-        <p>${filmBean.director.firstname} ${filmBean.director.lastname}</p>
-
+        <c:if test="${not empty film.director}">
+            <p>${film.director.firstname} ${film.director.lastname}</p>
+        </c:if>
         <h3>Actors</h3>
         <ul>
-            <c:forEach var="actor" items="${filmBean.actors}" begin="0" end="7">
+            <c:forEach var="actor" items="${film.actors}" begin="0" end="7">
                 <li>${actor.firstname} ${actor.lastname}</li>
             </c:forEach>
         </ul>
         <p>[others actors..]</p>
 
-        <form action="${pageContext.request.contextPath}/edit" method="GET" class="inline-buttons">
-            <input type="hidden" name="tmdbId" value="${filmBean.id}">
+        <form action="${pageContext.request.contextPath}/film/edit" method="GET" class="inline-buttons">
+            <input type="hidden" name="tmdbId" value="${film.id}">
             <button type="submit" style="background-color: #F97F51;">Edit</button>
         </form>
     </div>
