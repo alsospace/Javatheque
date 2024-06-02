@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Library represents a library entity containing a list of films owned by a specific owner.
- */
-/**
  * Represents a library containing films.
  */
 public class Library {

@@ -98,6 +98,12 @@ public class FilmRepository {
         collection.deleteOne(Filters.eq("film_id", id));
     }
 
+    /**
+     * Converts a Film object to a MongoDB document.
+     *
+     * @param film the Film object to be converted to a document
+     * @return the created Document object representing the film
+     */
     private Document filmToDocument(Film film) {
         return new Document("film_id", film.getId())
                 .append("library_id", film.getLibraryId())
@@ -114,6 +120,12 @@ public class FilmRepository {
                 .append("actors", personRepository.toDocuments(film.getActors()));
     }
 
+    /**
+     * Converts a MongoDB document to a Film object.
+     *
+     * @param document the Document object representing the film
+     * @return the Film object created from the document
+     */
     private Film documentToFilm(Document document) {
         int id = document.getInteger("film_id");
         String libraryId = document.getString("library_id");

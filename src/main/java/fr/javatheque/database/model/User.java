@@ -16,7 +16,17 @@ public class User {
     private String password;
     private Library library;
 
-
+    /**
+     * Constructs a new User object with the specified properties.
+     *
+     * @param lastname               the user's last name
+     * @param firstname              the user's first name
+     * @param email                  the user's email address
+     * @param password               the user's password
+     * @param library                the user's associated library
+     * @param id                     the user's unique identifier
+     * @param needToEncryptPassword  flag indicating whether the password needs to be encrypted
+     */
     public User(String lastname, String firstname, String email, String password, Library library, String id,
                 boolean needToEncryptPassword) {
         this.lastname = lastname;
@@ -27,22 +37,68 @@ public class User {
         this.library = library != null ? library : new Library(getId(), new ArrayList<>());
     }
 
+    /**
+     * Constructs a new User object with the specified properties.
+     *
+     * @param lastname   the user's last name
+     * @param firstname  the user's first name
+     * @param email      the user's email address
+     * @param password   the user's password
+     */
     public User(String lastname, String firstname, String email, String password) {
         this(lastname, firstname, email, password, null, null, false);
     }
 
+    /**
+     * Constructs a new User object with the specified properties.
+     *
+     * @param lastname   the user's last name
+     * @param firstname  the user's first name
+     * @param email      the user's email address
+     * @param password   the user's password
+     * @param id         the user's unique identifier
+     */
     public User(String lastname, String firstname, String email, String password, String id) {
         this(lastname, firstname, email, password, null, id, false);
     }
 
+    /**
+     * Constructs a new User object with the specified properties.
+     *
+     * @param lastname               the user's last name
+     * @param firstname              the user's first name
+     * @param email                  the user's email address
+     * @param password               the user's password
+     * @param needToEncryptPassword  flag indicating whether the password needs to be encrypted
+     */
     public User(String lastname, String firstname, String email, String password, boolean needToEncryptPassword) {
         this(lastname, firstname, email, password, null, null, needToEncryptPassword);
     }
 
+    /**
+     * Constructs a new User object with the specified properties.
+     *
+     * @param lastname               the user's last name
+     * @param firstname              the user's first name
+     * @param email                  the user's email address
+     * @param password               the user's password
+     * @param library                the user's associated library
+     * @param needToEncryptPassword  flag indicating whether the password needs to be encrypted
+     */
     public User(String lastname, String firstname, String email, String password, Library library, boolean needToEncryptPassword) {
         this(lastname, firstname, email, password, library, null, needToEncryptPassword);
     }
 
+    /**
+     * Constructs a new User object with the specified properties.
+     *
+     * @param lastname               the user's last name
+     * @param firstname              the user's first name
+     * @param email                  the user's email address
+     * @param password               the user's password
+     * @param id                     the user's unique identifier
+     * @param needToEncryptPassword  flag indicating whether the password needs to be encrypted
+     */
     public User(String lastname, String firstname, String email, String password, String id, boolean needToEncryptPassword) {
         this(lastname, firstname, email, password, null, id, needToEncryptPassword);
     }
@@ -145,5 +201,4 @@ public class User {
     public String getId() {
         return id;
     }
-
 }

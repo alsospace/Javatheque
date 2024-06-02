@@ -116,6 +116,12 @@ public class UserRepository {
         collection.deleteOne(Filters.eq("email", email));
     }
 
+    /**
+     * Creates a MongoDB document representation of a user.
+     *
+     * @param user the User object to be converted to a document
+     * @return the created Document object representing the user
+     */
     private Document createUserDocument(User user) {
         return new Document()
                 .append(USER_ID_KEY, user.getId())
@@ -126,6 +132,12 @@ public class UserRepository {
                 .append(PASSWORD_KEY, user.getPassword());
     }
 
+    /**
+     * Converts a MongoDB document to a User object.
+     *
+     * @param document the Document object representing the user
+     * @return the User object created from the document
+     */
     private User documentToUser(Document document) {
         String id = document.getString(USER_ID_KEY);
         Library library = this.libraryRepository.getLibraryById(document.getString(LIBRARY_ID_KEY));

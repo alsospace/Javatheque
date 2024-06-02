@@ -16,6 +16,9 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Servlet that handles user login requests.
+ */
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
     @Inject
@@ -24,12 +27,28 @@ public class LoginServlet extends HttpServlet {
     @Inject
     private UserBean userBean;
 
+    /**
+     * Handles the HTTP GET request for the login page.
+     *
+     * @param request  the HttpServletRequest object that contains the request the client made of the servlet
+     * @param response the HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws ServletException if the request for the GET could not be handled
+     * @throws IOException      if an input or output error is detected when the servlet handles the GET request
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("/views/login.jsp").forward(request, response);
     }
 
+    /**
+     * Handles the HTTP POST request for user login.
+     *
+     * @param request  the HttpServletRequest object that contains the request the client made of the servlet
+     * @param response the HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws ServletException if the request for the POST could not be handled
+     * @throws IOException      if an input or output error is detected when the servlet handles the POST request
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");

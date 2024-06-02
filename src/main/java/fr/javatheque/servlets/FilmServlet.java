@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Servlet that handles requests related to films.
+ */
 @WebServlet(name = "FilmServlet", urlPatterns = {"/film/*"})
 public class FilmServlet extends HttpServlet {
     @Inject
@@ -32,6 +35,14 @@ public class FilmServlet extends HttpServlet {
     @Inject
     private SuccessMessageBean successMessageBean;
 
+    /**
+     * Handles the HTTP GET request for film-related actions.
+     *
+     * @param request  the HttpServletRequest object that contains the request the client made of the servlet
+     * @param response the HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws ServletException if the request for the GET could not be handled
+     * @throws IOException      if an input or output error is detected when the servlet handles the GET request
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -52,6 +63,14 @@ public class FilmServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles the HTTP POST request for film-related actions.
+     *
+     * @param request  the HttpServletRequest object that contains the request the client made of the servlet
+     * @param response the HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws ServletException if the request for the POST could not be handled
+     * @throws IOException      if an input or output error is detected when the servlet handles the POST request
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -73,6 +92,13 @@ public class FilmServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles the HTTP DELETE request for film-related actions.
+     *
+     * @param request  the HttpServletRequest object that contains the request the client made of the servlet
+     * @param response the HttpServletResponse object that contains the response the servlet sends to the client
+     * @throws IOException if an input or output error is detected when the servlet handles the DELETE request
+     */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = getAction(request);
@@ -84,17 +110,37 @@ public class FilmServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Retrieves the action from the request URL.
+     *
+     * @param request the HttpServletRequest object
+     * @return the action extracted from the request URL
+     */
     private String getAction(HttpServletRequest request) {
         String servletPath = request.getServletPath();
         String pathInfo = request.getPathInfo();
         return (pathInfo != null) ? servletPath + pathInfo : servletPath;
     }
 
+    /**
+     * Retrieves the user from the database based on the user ID.
+     *
+     * @param userID the ID of the user
+     * @return an Optional containing the user if found, or an empty Optional otherwise
+     */
     private Optional<User> getUserFromDatabase(String userID) {
         UserRepository ur = new UserRepository();
         return ur.getUserById(userID);
     }
 
+    /**
+     * Handles the request to show existent films based on the search criteria.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @throws ServletException if the request could not be handled
+     * @throws IOException      if an input or output error is detected
+     */
     private void showExistentFilm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String title = request.getParameter("title");
@@ -104,7 +150,7 @@ public class FilmServlet extends HttpServlet {
         TMDBRequest tmdbRequest = TMDBRequest.getInstance();
         String jsonString = tmdbRequest.searchMovies(title, language, page);
 
-        if (jsonString == null || jsonString.isEmpty()){
+        if (jsonString == null || jsonString.isEmpty()) {
             response.sendError(HttpServletResponse.SC_NO_CONTENT, "The request at TMDB return an empty string.");
             return;
         }
@@ -121,6 +167,14 @@ public class FilmServlet extends HttpServlet {
         request.getRequestDispatcher("/views/existent_film.jsp").forward(request, response);
     }
 
+    /**
+     * Handles the request to show the details of a film.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @throws ServletException if the request could not be handled
+     * @throws IOException      if an input or output error is detected
+     */
     private void showFilm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int filmId = Integer.parseInt(request.getParameter("id"));
@@ -134,6 +188,14 @@ public class FilmServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles the request to edit a film.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @throws ServletException if the request could not be handled
+     * @throws IOException      if an input or output error is detected
+     */
     private void editFilm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int filmId = Integer.parseInt(request.getParameter("tmdbId"));
@@ -147,6 +209,14 @@ public class FilmServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles the request to add a film to the user's library.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @param user     the User object representing the current user
+     * @throws IOException if an input or output error is detected
+     */
     private void addFilm(HttpServletRequest request, HttpServletResponse response, User user) throws IOException {
         int tmdbId = Integer.parseInt(request.getParameter("tmdbId"));
         String lang = request.getParameter("lang");
@@ -161,6 +231,14 @@ public class FilmServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/library");
     }
 
+    /**
+     * Handles the request to update a film.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @throws ServletException if the request could not be handled
+     * @throws IOException      if an input or output error is detected
+     */
     private void updateFilm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int filmId = Integer.parseInt(request.getParameter("id"));
@@ -185,12 +263,28 @@ public class FilmServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles the request to delete a film.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @throws IOException if an input or output error is detected
+     */
     private void deleteFilm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int filmId = Integer.parseInt(request.getParameter("tmdbid"));
         FilmRepository filmRepository = new FilmRepository();
         filmRepository.deleteFilm(filmId);
         response.sendRedirect(request.getContextPath() + "/library");
     }
+
+    /**
+     * Handles the case when a film is not found.
+     *
+     * @param request  the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @throws ServletException if the request could not be handled
+     * @throws IOException      if an input or output error is detected
+     */
     private void handleFilmNotFound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         this.errorMessageBean.setErrorMessage("Film not found.");
