@@ -43,7 +43,7 @@ public class TMDBUtils {
     private static Person getDirectorFromCredits(JsonArray crewArray) {
         return StreamSupport.stream(crewArray.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
-                .filter(crewJson -> "Director".equals(crewJson.get("job").getAsString()))
+                .filter(crewJson -> "Director".equalsIgnoreCase(crewJson.get("job").getAsString()))
                 .findFirst()
                 .map(crewJson -> parsePersonName(crewJson.get("name").getAsString()))
                 .orElse(new Person("Doe", "John"));
@@ -52,7 +52,7 @@ public class TMDBUtils {
     private static List<Person> getActorsFromCredits(JsonArray castArray) {
         return StreamSupport.stream(castArray.spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
-                .filter(actorJson -> "Acting".equals(actorJson.get("known_for_department").getAsString()))
+                .filter(actorJson -> "Acting".equalsIgnoreCase(actorJson.get("known_for_department").getAsString()))
                 .limit(MAX_ACTORS)
                 .map(actorJson -> parsePersonName(actorJson.get("name").getAsString()))
                 .collect(Collectors.toList());

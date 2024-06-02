@@ -58,7 +58,7 @@
             font-size: 14px;
         }
 
-        #add-film {
+        #search-film {
             background-color: #2ecc71;
             color: #fff;
         }
@@ -185,7 +185,6 @@
             background-color: #2980b9;
         }
     </style>
-
 </head>
 <body>
 <div class="error-message">
@@ -200,9 +199,9 @@
     </c:if>
 </div>
 
-<c:if test="${not empty sessionScope.user}">
+<c:if test="${not empty sessionScope.userID}">
     <div class="header-container">
-        <button id="add-film" onclick='redirectToAddFilm()'>Search film to add</button>
+        <button id="search-film" onclick='redirectToSearchFilm()'>Search film to add</button>
         <h1>.NETFlix</h1>
         <button id="logout" onclick='redirectToLogout()'>Logout</button>
     </div>
@@ -226,12 +225,9 @@
                             <p><strong>${film.support}</strong> (${film.lang})</p>
                             <form action="${pageContext.request.contextPath}/films/show" method="get" class="inline-buttons">
                                 <input type="hidden" name="id" value="${film.id}">
-                                <button type="submit" style="background-color: #6ab04c;">View</button>
+                                <button type="submit" style="background-color: #6ab04c;">Consult</button>
                             </form>
-                            <form action="${pageContext.request.contextPath}/films/delete" method="post" class="inline-buttons">
-                                <input type="hidden" name="id" value="${film.id}">
-                                <button type="submit" style="background-color: #eb3b5a;">Delete</button>
-                            </form>
+                            <button type="submit" style="background-color: #eb3b5a;" onclick="deleteFilm('${film.id}', '${param.search}')">Delete</button>
                         </div>
                     </div>
                 </c:forEach>
@@ -243,27 +239,27 @@
     </div>
 </c:if>
 
-<c:if test="${empty sessionScope.user}">
+<c:if test="${empty sessionScope.userID}">
     <button id="login" onclick='redirectToLogin()'>Login</button>
 </c:if>
 
-    <script>
-        function redirectToLogout() {
-            window.location.href = "${pageContext.request.contextPath}/logout";
-        }
+<script>
+    function redirectToLogout() {
+        window.location.href = "${pageContext.request.contextPath}/logout";
+    }
 
-        function redirectToLogin() {
-            window.location.href = "${pageContext.request.contextPath}/login";
-        }
+    function redirectToLogin() {
+        window.location.href = "${pageContext.request.contextPath}/login";
+    }
 
-        function redirectToAddFilm() {
-            window.location.href = "${pageContext.request.contextPath}/film/add";
-        }
+    function redirectToSearchFilm() {
+        window.location.href = "${pageContext.request.contextPath}/search";
+    }
 
-        function deleteFilm(id, search) {
-            let result = confirm("Are you sure? This will permanently delete this film!");
-            if (result) {
-                fetch("${pageContext.request.contextPath}/film/" + id + "/delete", {
+    function deleteFilm(id, search) {
+        let result = confirm("Are you sure? This will permanently delete this film!");
+        if (result) {
+            fetch("${pageContext.request.contextPath}/" + id + "/delete", {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -271,29 +267,29 @@
                 body: JSON.stringify({
                     'tmdb_id': id,
                 }),
-                })
+            })
                 .then(function(response){
-                  console.log("Success", response);
-                  window.location.href = '${pageContext.request.contextPath}/library?search=' + search;
+                    console.log("Success", response);
+                    window.location.href = '${pageContext.request.contextPath}/library?search=' + search;
                 })
                 .catch(function(){
-                  console.log("Error", response);
+                    console.log("Error", response);
                 })
-            }
         }
+    }
 
-        document.getElementById('search-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-            const searchBar = document.getElementById('search-bar');
-            const searchValue = searchBar.value.trim();
+        const searchBar = document.getElementById('search-bar');
+        const searchValue = searchBar.value.trim();
 
-            if (searchValue !== "") {
-                window.location.href = '${pageContext.request.contextPath}/library?search=' + encodeURIComponent(searchValue);
-            } else {
-                window.location.href = '${pageContext.request.contextPath}/library?search=all';
-            }
-        });
-        </script>
+        if (searchValue !== "") {
+            window.location.href = '${pageContext.request.contextPath}/library?search=' + encodeURIComponent(searchValue);
+        } else {
+            window.location.href = '${pageContext.request.contextPath}/library?search=all';
+        }
+    });
+</script>
 </body>
 </html>

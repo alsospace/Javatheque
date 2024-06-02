@@ -74,7 +74,7 @@
 
 <c:if test="${not empty sessionScope.userID}">
     <p class="welcome">Welcome <span style="color: #F97F51;"><strong>${userBean.lastname} ${userBean.firstname}</strong></span>!</p>
-    <form action="${pageContext.request.contextPath}/film/library" method="GET">
+    <form action="${pageContext.request.contextPath}/library" method="GET">
         <input type="hidden" name="search" value="all">
         <button type="submit" onclick="redirectToLibrary()"  id="library">Go to Library</button>
     </form>
@@ -95,7 +95,7 @@
     }
 
     function redirectToLibrary() {
-        window.location.href = "${pageContext.request.contextPath}/film//library";
+        window.location.href = "${pageContext.request.contextPath}/library";
     }
 
     function redirectToLogout() {

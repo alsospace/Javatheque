@@ -1,5 +1,7 @@
 package fr.javatheque.servlets;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import fr.javatheque.beans.ErrorMessageBean;
 import fr.javatheque.beans.FilmBean;
 import fr.javatheque.database.model.Film;
@@ -39,24 +41,25 @@ public class FilmServlet extends HttpServlet {
         }
 
         if (action == null || action.equals("/")) {
-            request.getRequestDispatcher("/views/film/library.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/library.jsp").forward(request, response);
         } else if (action.equals("/search")) {
             String query = request.getParameter("query");
             String language = request.getParameter("language");
             int page = Integer.parseInt(request.getParameter("page"));
 
             TMDBRequest tmdbRequest = TMDBRequest.getInstance();
-            String searchResults = tmdbRequest.searchMovies(query, language, page);
+            String jsonString = tmdbRequest.searchMovies(query, language, page);
+            JsonElement searchResults = JsonParser.parseString(jsonString);
 
             request.setAttribute("searchResults", searchResults);
-            request.getRequestDispatcher("/views/film/existant_film.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/existant_film.jsp").forward(request, response);
         } else if (action.equals("/show")) {
             int filmId = Integer.parseInt(request.getParameter("id"));
             FilmRepository filmRepository = new FilmRepository();
             Optional<Film> film = filmRepository.getFilmById(filmId);
             if (film.isPresent()) {
                 request.setAttribute("film", film.get());
-                request.getRequestDispatcher("/views/film/show_film.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/show_film.jsp").forward(request, response);
             } else {
                 this.errorMessageBean.setErrorMessage("Film not found.");
                 request.getRequestDispatcher("/views/error.jsp").forward(request, response);
@@ -67,7 +70,7 @@ public class FilmServlet extends HttpServlet {
             Optional<Film> film = filmRepository.getFilmById(filmId);
             if (film.isPresent()) {
                 request.setAttribute("film", film.get());
-                request.getRequestDispatcher("/views/film/edit_film.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/edit_film.jsp").forward(request, response);
             } else {
                 this.errorMessageBean.setErrorMessage("Film not found.");
                 request.getRequestDispatcher("/views/error.jsp").forward(request, response);
