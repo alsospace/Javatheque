@@ -87,7 +87,7 @@
 <body>
     <h1><a href="${pageContext.request.contextPath}/">.NETFlix</a></h1>
 
-    <form id="edit_film" action="${pageContext.request.contextPath}/film/edit" method="POST">
+    <form id="edit_film" action="${pageContext.request.contextPath}/edit" method="POST">
         <label for="id">ID: </label>
         <input type="text" id="id" name="id" value="${filmBean.id}" readonly>
 

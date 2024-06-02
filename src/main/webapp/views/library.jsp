@@ -223,7 +223,7 @@
                             <p>${film.title}</p>
                             <p><em>${film.year}</em></p>
                             <p><strong>${film.support}</strong> (${film.lang})</p>
-                            <form action="${pageContext.request.contextPath}/films/show" method="get" class="inline-buttons">
+                            <form action="${pageContext.request.contextPath}/show" method="get" class="inline-buttons">
                                 <input type="hidden" name="id" value="${film.id}">
                                 <button type="submit" style="background-color: #6ab04c;">Consult</button>
                             </form>

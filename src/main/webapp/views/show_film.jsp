@@ -118,7 +118,7 @@
         </ul>
         <p>[others actors..]</p>
 
-        <form action="${pageContext.request.contextPath}/film/edit" method="GET" class="inline-buttons">
+        <form action="${pageContext.request.contextPath}/edit" method="GET" class="inline-buttons">
             <input type="hidden" name="tmdbId" value="${filmBean.id}">
             <button type="submit" style="background-color: #F97F51;">Edit</button>
         </form>
