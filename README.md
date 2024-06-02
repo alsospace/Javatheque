@@ -1,6 +1,6 @@
 # Javatheque
 
-Javatheque is a project to create an API rest for managing a video library using Java Jakarta
+Javatheque is a project to create an API rest for managing a video library using Java Jakarta.
 
 This project is part of module RT0805 of the Master DAS.
 ## Authors
@@ -29,7 +29,7 @@ chmod +x mvnw.cmd
 ### Deploy for the first time
 
 ```powershell
-.\mvnw clean package
+.\mvnw clean install
 
 asadmin deploy .\target\javatheque.war
 ```
@@ -37,7 +37,7 @@ asadmin deploy .\target\javatheque.war
 ### Redeploy
 
 ```powershell
-.\mvnw clean package
+.\mvnw clean install
 
 asadmin redeploy --name javatheque .\target\javatheque.war
 ```
