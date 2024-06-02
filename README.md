@@ -17,6 +17,14 @@ Before you start, you'll need to install **Glassfish**.
 ```powershell
 asadmin start-domain [domaine-name]
 ```
+### Give execution permission to mvnw file
+```powershell
+cd javatheque/
+
+chmod +x mvnw
+
+chmod +x mvnw.cmd
+```
 
 ### Deploy for the first time
 
