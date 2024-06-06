@@ -6,10 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.javatheque.database.model.Film;
 import fr.javatheque.database.model.Person;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,14 +25,13 @@ public class TMDBUtils {
     /**
      * Retrieves film details from the TMDB API based on the provided ID, language, and support.
      *
-     * @param id       the ID of the film to retrieve
-     * @param lang     the language of the film details
-     * @param support  the support type of the film
-     * @param response the HttpServletResponse object for handling the response
+     * @param id      the ID of the film to retrieve
+     * @param lang    the language of the film details
+     * @param support the support type of the film
      * @return the Film object containing the retrieved details
      * @throws IOException if an I/O error occurs during the API request
      */
-    public static Film getFilmFromTMDB(int id, String lang, String support, HttpServletResponse response) throws IOException {
+    public static Film getFilmFromTMDB(int id, String lang, String support) throws IOException {
         JsonObject movieDetails = getJsonObjectFromApi(TMDB_REQUEST.getMovieDetails(id, lang));
         JsonObject movieCredits = getJsonObjectFromApi(TMDB_REQUEST.getCreditDetails(id, lang));
 
@@ -47,11 +44,12 @@ public class TMDBUtils {
             year = "No year found";
         }
 
-//        Person director = getDirectorFromCredits(movieCredits.getAsJsonArray("cast"));
-//        List<Person> actors = getActorsFromCredits(movieCredits.getAsJsonArray("cast"));
+        JsonArray cast = movieCredits.getAsJsonArray("cast");
+        Person director = getDirectorFromCredits(cast);
+        List<Person> actors = getActorsFromCredits(cast);
 
         return new Film(id, null, poster, lang, support, title, description, releaseDate, year,
-                0.0f, "no opinion yet", new Person("John", "Doe"), new ArrayList<>());
+                0.0f, "no opinion yet", director, actors);
     }
 
     /**
@@ -65,33 +63,43 @@ public class TMDBUtils {
     }
 
     /**
-     * Retrieves the director information from the credits JSON array.
+     * Retrieves a list of people from the credits JSON array based on the specified department and limit.
      *
-     * @param crewArray the JSON array containing crew information
-     * @return the Person object representing the director
+     * @param jsonArray  The JSON array containing the credits data.
+     * @param department The department to filter the people by.
+     * @param limit      The maximum number of people to retrieve.
+     * @return A list of Person objects representing the people from the specified department.
+     */
+    private static List<Person> getPeopleFromCredits(JsonArray jsonArray, String department, int limit) {
+        return StreamSupport.stream(jsonArray.spliterator(), false)
+                .map(JsonElement::getAsJsonObject)
+                .filter(jsonObject -> department.equalsIgnoreCase(jsonObject.get("known_for_department").getAsString()))
+                .limit(limit)
+                .map(jsonObject -> parsePersonName(jsonObject.get("name").getAsString()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves the director from the credits JSON array.
+     *
+     * @param crewArray The JSON array containing the crew credits data.
+     * @return The Person object representing the director, or a default Person object if no director is found.
      */
     private static Person getDirectorFromCredits(JsonArray crewArray) {
-        return StreamSupport.stream(crewArray.spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .filter(crewJson -> "Director".equalsIgnoreCase(crewJson.get("job").getAsString()))
+        return getPeopleFromCredits(crewArray, "Directing", 1)
+                .stream()
                 .findFirst()
-                .map(crewJson -> parsePersonName(crewJson.get("name").getAsString()))
                 .orElse(new Person("Doe", "John"));
     }
 
     /**
-     * Retrieves the list of actors from the credits JSON array.
+     * Retrieves a list of actors from the credits JSON array.
      *
-     * @param castArray the JSON array containing cast information
-     * @return the list of Person objects representing the actors
+     * @param castArray The JSON array containing the cast credits data.
+     * @return A list of Person objects representing the actors, limited to a maximum of MAX_ACTORS.
      */
     private static List<Person> getActorsFromCredits(JsonArray castArray) {
-        return StreamSupport.stream(castArray.spliterator(), false)
-                .map(JsonElement::getAsJsonObject)
-                .filter(actorJson -> "Acting".equalsIgnoreCase(actorJson.get("known_for_department").getAsString()))
-                .limit(MAX_ACTORS)
-                .map(actorJson -> parsePersonName(actorJson.get("name").getAsString()))
-                .collect(Collectors.toList());
+        return getPeopleFromCredits(castArray, "Acting", MAX_ACTORS);
     }
 
     /**
