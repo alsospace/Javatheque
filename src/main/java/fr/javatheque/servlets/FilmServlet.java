@@ -222,7 +222,7 @@ public class FilmServlet extends HttpServlet {
         String lang = request.getParameter("lang");
         String support = request.getParameter("support");
 
-        Film film = TMDBUtils.getFilmFromTMDB(tmdbId, lang, support, response);
+        Film film = TMDBUtils.getFilmFromTMDB(tmdbId, lang, support);
         film.setLibraryId(user.getLibrary().getId());
 
         FilmRepository filmRepository = new FilmRepository();
