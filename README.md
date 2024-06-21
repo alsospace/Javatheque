@@ -50,3 +50,5 @@ asadmin deploy .\target\javatheque.war
 asadmin redeploy --name javatheque .\target\javatheque.war
 ```
 
+You can access at : http://localhost:8080/javatheque
+
