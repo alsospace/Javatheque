@@ -12,6 +12,8 @@ This project is part of module RT0805 of the Master DAS.
 
 Before you start, you'll need to install **Glassfish**.
 
+If you are on Windows don't forget to launch "**Docker Desktop**".
+
 ### Start a domain
 
 ```powershell
@@ -21,9 +23,15 @@ asadmin start-domain [domaine-name]
 ```powershell
 cd javatheque/
 
+# If you are on Windows use a Git terminal or WSL to perform these commands
 chmod +x mvnw
-
 chmod +x mvnw.cmd
+```
+### Run MongoDB
+```powershell
+cd javatheque/
+
+docker-compose up --build
 ```
 
 ### Deploy for the first time
