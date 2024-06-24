@@ -155,14 +155,25 @@ public class FilmServlet extends HttpServlet {
             return;
         }
 
-        JsonObject searchResultsObject = JsonParser.parseString(jsonString).getAsJsonObject();
-        JsonArray resultsArray = searchResultsObject.getAsJsonArray("results");
+        JsonElement je = JsonParser.parseString(jsonString);
 
         List<JsonObject> searchResultsList = new ArrayList<>();
-        for (JsonElement element : resultsArray) {
-            searchResultsList.add(element.getAsJsonObject());
+        if (je != null && je.isJsonObject()) {
+            JsonObject searchResultsObject = je.getAsJsonObject();
+            JsonArray resultsArray = searchResultsObject.getAsJsonArray("results");
+
+            if (resultsArray != null) {
+                for (JsonElement element : resultsArray) {
+                    if (element.isJsonObject()) {
+                        searchResultsList.add(element.getAsJsonObject());
+                    }
+                }
+            }
         }
 
+        if (searchResultsList.isEmpty()) {
+            request.setAttribute("noResults", true);
+        }
         request.setAttribute("searchResults", searchResultsList);
         request.getRequestDispatcher("/views/existent_film.jsp").forward(request, response);
     }

@@ -81,57 +81,66 @@
 <body>
 <h1>Search Results</h1>
 
-<c:if test="${not empty searchResults}">
-    <table>
-        <thead>
-        <tr>
-            <th>Film</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="movie" items="${searchResults}">
+<c:if test="${searchResults != null}">
+    <c:if test="${not empty searchResults}">
+        <table>
+            <thead>
             <tr>
-                <td>
-                    <img src="https://image.tmdb.org/t/p/w220_and_h330_face${movie.get('poster_path').getAsString()}" alt="${movie.get('title')}" width="100">
-                    <p>${movie.get('title').getAsString()}</p>
-                    <p><em>${movie.get('release_date').getAsString()}</em></p>
-                    <form action="${pageContext.request.contextPath}/film/add" method="POST">
-                        <input type="hidden" name="tmdbId" value="${movie.get('id')}">
-                        <input type="hidden" name="lang" value="${param.lang}">
-                        <input type="hidden" name="support" value="${param.support}">
-                        <button type="submit">Add to my library</button>
-                    </form>
-                </td>
-                <td>${movie.get('overview').getAsString()}</td>
+                <th>Film</th>
+                <th>Description</th>
             </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-</c:if>
-
-<c:if test="${empty searchResults}">
-    <p>No results found.</p>
-</c:if>
-
-<div style="text-align: center; margin-top: 20px; display: flex; justify-content: space-between;">
-    <c:if test="${param.page > 1}">
-        <form action="${pageContext.request.contextPath}/film/show_existent_film" method="GET">
-            <input type="hidden" name="title" value="${param.title}">
-            <input type="hidden" name="language" value="${param.language}">
-            <input type="hidden" name="page" value="${param.page - 1}">
-            <button type="submit" style="background-color: #2a8f03;"> << Previous Page</button>
-        </form>
+            </thead>
+            <tbody>
+            <c:forEach var="movie" items="${searchResults}">
+                <tr>
+                    <td>
+                        <c:if test="${not empty movie.get('poster_path')}">
+                            <img src="https://image.tmdb.org/t/p/w220_and_h330_face${movie.get('poster_path').getAsString()}" alt="${movie.get('title').getAsString()}" width="100">
+                        </c:if>
+                        <p>${not empty movie.get('title') ? movie.get('title').getAsString() : 'N/A'}</p>
+                        <p><em>${not empty movie.get('release_date') ? movie.get('release_date').getAsString() : 'N/A'}</em></p>
+                        <form action="${pageContext.request.contextPath}/film/add" method="POST">
+                            <input type="hidden" name="tmdbId" value="${movie.get('id').getAsString()}">
+                            <input type="hidden" name="lang" value="${param.lang}">
+                            <input type="hidden" name="support" value="${param.support}">
+                            <button type="submit">Add to my library</button>
+                        </form>
+                    </td>
+                    <td>${not empty movie.get('overview') ? movie.get('overview').getAsString() : 'No description available'}</td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
     </c:if>
 
-    <c:if test="${param.page < searchResultsObject.total_pages}">
-        <form action="${pageContext.request.contextPath}/film/show_existent_film" method="GET">
-            <input type="hidden" name="title" value="${param.title}">
-            <input type="hidden" name="language" value="${param.language}">
-            <input type="hidden" name="page" value="${param.page + 1}">
-            <button type="submit" style="background-color: #2a8f03;">Next Page >></button>
-        </form>
+    <c:if test="${empty searchResults}">
+        <p>No results found.</p>
     </c:if>
-</div>
+
+    <div style="text-align: center; margin-top: 20px; display: flex; justify-content: space-between;">
+        <c:if test="${param.page > 1}">
+            <form action="${pageContext.request.contextPath}/film/show_existent_film" method="GET">
+                <input type="hidden" name="title" value="${param.title}">
+                <input type="hidden" name="language" value="${param.language}">
+                <input type="hidden" name="page" value="${param.page - 1}">
+                <button type="submit" style="background-color: #2a8f03;"> << Previous Page</button>
+            </form>
+        </c:if>
+
+        <c:if test="${param.page < searchResultsObject.total_pages}">
+            <form action="${pageContext.request.contextPath}/film/show_existent_film" method="GET">
+                <input type="hidden" name="title" value="${param.title}">
+                <input type="hidden" name="language" value="${param.language}">
+                <input type="hidden" name="page" value="${param.page + 1}">
+                <button type="submit" style="background-color: #2a8f03;">Next Page >></button>
+            </form>
+        </c:if>
+    </div>
+</c:if>
+<c:if test="${searchResults == null}">
+    <p>Une erreur s'est produite lors de la recherche. Veuillez réessayer.</p>
+</c:if>
+
+
 </body>
 </html>

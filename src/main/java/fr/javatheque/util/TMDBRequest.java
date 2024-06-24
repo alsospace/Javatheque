@@ -1,10 +1,11 @@
 package fr.javatheque.util;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
@@ -47,9 +48,13 @@ public class TMDBRequest {
             SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-            this.httpClient = new OkHttpClient();
-            this.httpClient.setSslSocketFactory(sslContext.getSocketFactory());
-            this.httpClient.setHostnameVerifier((hostname, session) -> true);
+            // Create a ssl socket factory with our all-trusting manager
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            this.httpClient = new OkHttpClient.Builder()
+                    .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
+                    .hostnameVerifier((hostname, session) -> true)
+                    .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -125,7 +130,10 @@ public class TMDBRequest {
                 .addHeader("accept", "application/json")
                 .addHeader("Authorization", "Bearer " + TMDB_API_KEY)
                 .build();
-        Response response = httpClient.newCall(request).execute();
-        return response.body().string();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            return response.body().string();
+        }
     }
 }
